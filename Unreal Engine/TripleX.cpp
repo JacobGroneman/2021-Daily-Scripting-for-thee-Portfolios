@@ -5,9 +5,9 @@ int main()
 	std::cout << "You have a suitcase with a 3 digit combo lock" << std::endl;
 	std::cout << "Read the clues and input the prospective code" << std::endl;
 
-	int a = 4;
-	int b = 2;
-	int c = 7;
+	const int a = 4; //Const prefix = unchanging var!
+	const int b = 2;
+	const int c = 7;
 
 	int sum = a + b + c;
 	int product = a * b * c;
