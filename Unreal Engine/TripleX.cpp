@@ -28,6 +28,15 @@ int main()
 	
 			//std::cout << "You entered: " << GuessOne << GuessTwo << GuessThree;
 
+		if (GuessSum == CodeSum && GuessProduct == CodeProduct)
+		{
+			std::count << "The case clicks open. You Win." << std::endl;
+		}
+		else
+		{
+			std::count << "The case remains locked" << std::endl;
+		}
+
 	return 0; //Return Statement
 }
 
