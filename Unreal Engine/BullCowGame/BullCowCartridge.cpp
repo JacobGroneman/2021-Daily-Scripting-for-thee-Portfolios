@@ -4,11 +4,15 @@
 void UBullCowCartridge::BeginPlay() //Start
 {
 	Super::BeginPlay();
-	PrintLine("Hi There! Welcome to the Bull Cow Game");
-	PrintLine("Press Enter to continue. . .")
+	PrintLine(TEXT("Hi There! Welcome to the Bull Cow Game"));
+	PrintLine(TEXT("Press Enter to continue. . ."));
 }
 
 void UBullCowCartridge::OnInput(const FString& Input) //On Enter
 {
 	ClearScreen();
+
+	private FString HiddenWord = TEXT("plant");
+	
+	PrintLine(Input);
 }
