@@ -8,7 +8,7 @@ void UBullCowCartridge::BeginPlay() //Start
 	PrintLine(TEXT("Guess the 4-letter word")); // Magic Number, Remove!
 	PrintLine(TEXT("Press Enter to continue. . ."));
 	
-	HiddenWord = TEXT("plant");
+	InitGame();
 }
 
 void UBullCowCartridge::OnInput(const FString& Input) //On Enter
@@ -22,6 +22,13 @@ void UBullCowCartridge::OnInput(const FString& Input) //On Enter
 	}
 	else
 	{
-		PrintLine(TEXT("oh no! You LOST!"));
+		PrintLine(TEXT("Please Try Again"));
+		//--Lives;
 	}
+}
+
+void UBullCowCartridge::InitGame()
+{
+	HiddenWord = TEXT("plant");
+	Lives = 4;
 }
