@@ -5,7 +5,7 @@ void UBullCowCartridge::BeginPlay() //Start
 {
 	Super::BeginPlay();
 	
-	StartGame();
+	SetupGame();
 
 	PrintLine(TEXT("The HiddenWord is: %s. \nIt is %i chars long."), *HiddenWord, Hiddenword.Len()); //Debug-Line
 
@@ -17,10 +17,14 @@ void UBullCowCartridge::BeginPlay() //Start
 void UBullCowCartridge::OnInput(const FString& Input) //On Enter
 {
 	ClearScreen();
+
+	/*If Game Over--> ClearScreen(), SetupGame();
+	Else Check Player Guess*/
 	
 	if (Input == HiddenWord)
 	{
 		PrintLine(TEXT("Yee! You WON!"));
+		// bGameOver = true;
 	}
 	else
 	{
@@ -29,13 +33,16 @@ void UBullCowCartridge::OnInput(const FString& Input) //On Enter
 			PrintLine(TEXT("The Hidden word is %i char long. Try Again!"), Hiddenword.Len());
 		}
 
-		PrintLine(TEXT("Please Try Again"));
+		PrintLine(TEXT("You Lost!"));
+		//bGameOver = true;
+
 		//--Lives;
 	}
 }
 
-void UBullCowCartridge::StartGame()
+void UBullCowCartridge::SetupGame()
 {
+	bGameOver = false;
 	HiddenWord = TEXT("plant");
 	Lives = 4;
 }
