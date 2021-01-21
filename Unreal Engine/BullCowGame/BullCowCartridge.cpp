@@ -19,31 +19,47 @@ void UBullCowCartridge::OnInput(const FString& Input) //On Enter
 	}
 	else //Check Player Guess
 	{
-		if (Input == HiddenWord)
-		{
-			PrintLine(TEXT("Yee! You WON!"));
-			EndGame();
-		}
-		else
-		{
-			PrintLine(TEXT("You lose a life"));
-			PrintLine(TEXT("%i"), --Lives);
-
-			if (Lives > 0)
-			{
-				if (Input.Len() != HiddenWord.Len())
-				{
-					PrintLine(TEXT("Incorrect! Try Again. \n(Lives = %i)"), Lives);
-				}
-				else
-				{
-					PrintLine(TEXT("You have no lives left. You Lose!"))
-					EndGame();
-				}
-			}
-		}
+		ProcessGuess(Input);
 	}
 }
+
+UBullCowCartridge::ProcessGuess(FString Guess)
+{
+	if (Guess == HiddenWord)
+	{
+		PrintLine(TEXT("Yee! You WON!"));
+		EndGame();
+		return;
+	}
+
+	if (!IsIsogram)
+	{
+		PrintLine(TEXT("No repeating letters! Guess Again."));
+	}
+
+
+	if (Guess.Len() != HiddenWord.Len()) //Check Letter Count
+	{
+		PrintLine(TEXT("The Hidden Word is %i Letters Long"), HiddenWord.Len());
+		PrintLine(TEXT("Incorrect! Try Again. \n(Lives = %i)"), Lives);
+		return;
+	}
+
+	PrintLine(TEXT("You lose a life"));
+	--Lives;
+
+	if (Lives <= 0)
+	{
+		ClearScreen();
+		PrintLine(TEXT("You have no lives left. You Lose!"));
+		PrintLine(TEXT("The Hidden Word Was: %s"), *HiddenWord);
+		EndGame();
+		return;
+	}
+
+	PrintLine(TEXT("Guess Again! (Lives = %i)"), Lives);
+}
+
 
 void UBullCowCartridge::SetupGame()
 {
@@ -60,5 +76,5 @@ void UBullCowCartridge::SetupGame()
 void UBullCowCartridge::EndGame()
 {
 	bGameOver = true;
-	PrintLine(TEXT("Press enter to play again. . ."));
+	PrintLine(TEXT("\nPress enter to play again. . ."));
 }
