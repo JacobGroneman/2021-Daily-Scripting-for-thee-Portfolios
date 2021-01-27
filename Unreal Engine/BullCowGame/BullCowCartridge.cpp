@@ -62,6 +62,11 @@ UBullCowCartridge::ProcessGuess(FString Guess)
 
 bool UBullCowCartridge::IsIsogram(FString Word) const
 {
+	for (int Index = 0; Index < Word.Len(); Index++;)
+	{
+		PrintLine(TEXT("%c"), Word[Index]);
+	}
+
 	return true;
 }
 
@@ -77,6 +82,8 @@ void UBullCowCartridge::SetupGame()
 	PrintLine(TEXT("Press Enter to continue. . ."));
 
 	//PrintLine(TEXT("The Hidden Word Starts With: %c"), HiddenWord[0]);
+
+	IsIsogram(HiddenWord);
 }
 
 void UBullCowCartridge::EndGame()
