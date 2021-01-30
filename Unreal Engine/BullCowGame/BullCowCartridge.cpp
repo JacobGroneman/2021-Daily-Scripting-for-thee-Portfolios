@@ -1,10 +1,14 @@
-//Fill out your copyright notice in the Description page of the Project Settings.
+#include "Misc/FileHelper.h" //To Locate Hidden Word .txt List
+#include "Misc/Paths.h"
+
 #include "BullCowCartridge.h"
-#include "HiddenWordList.h"
 
 void UBullCowCartridge::BeginPlay() //Start
 {
 	Super::BeginPlay();
+	
+	const FString HiddenWordListDir = FPaths::ProjectContentDir() / TEXT("HiddenWordList.txt")
+	FFileHelper::LoadFileToStringArray(Words, *HiddenWordListDir); //Assigns HiddenWordList.txt to TArray<FString> Words
 	
 	SetupGame();
 
