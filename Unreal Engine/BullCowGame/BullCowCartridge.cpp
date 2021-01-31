@@ -12,7 +12,13 @@ void UBullCowCartridge::BeginPlay() //Start
 	
 	SetupGame();
 
+	PrintLine(TEXT("The # of Possible Words is: %i"), Words.Num());
 	PrintLine(TEXT("The HiddenWord is: %s. \nIt is %i chars long."), *HiddenWord, Hiddenword.Len()); //Debug-Line
+
+	for (int32 Index = 0; Index != 5; i++)
+	{
+		PrintLine(TEXT("%s"), *Words[Index]);
+	}
 }
 
 void UBullCowCartridge::OnInput(const FString& Input) //On Enter
@@ -79,16 +85,6 @@ bool UBullCowCartridge::IsIsogram(FString Word) const
 
 		return true;
 	}
-
-	/*int32 Index = 0;
-
-	for (int32 Comparison = Index + 1; Comparison < Word.Len(); Comparison++)
-	{
-		if (Word[Index] == Word[Comparison])
-		{
-			return false;
-		}
-	}*/
 }
 
 void UBullCowCartridge::SetupGame()
