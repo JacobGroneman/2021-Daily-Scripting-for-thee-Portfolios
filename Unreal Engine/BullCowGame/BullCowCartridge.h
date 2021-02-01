@@ -23,7 +23,8 @@ class BULLCOWGAME_API UBullCowCartridge : public UCartridge
 	//Your declarations go below!
 	private:
 		bool bGameOver;
-		TArray<FString> Words
+		TArray<FString> Words;
+		TArrat<FString> Isograms;
 		FString HiddenWord;
 		int32 Lives;
 };

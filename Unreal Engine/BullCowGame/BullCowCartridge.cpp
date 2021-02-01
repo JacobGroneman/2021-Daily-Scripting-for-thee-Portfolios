@@ -8,6 +8,8 @@ void UBullCowCartridge::BeginPlay() //Start
 {
 	Super::BeginPlay();
 
+	Isograms = GetValidWords(Words);
+
 	const FString HiddenWordListDir = FPaths::ProjectContentDir() / TEXT("HiddenWordList.txt")
 	FFileHelper::LoadFileToStringArray(Words, *HiddenWordListDir); //Assigns HiddenWordList.txt to TArray<FString> Words
 
@@ -84,7 +86,7 @@ void UBullCowCartridge::SetupGame()
 {
 	PrintLine(TEXT("Hi There! Welcome to the Bull Cow Game"));
 
-	HiddenWord = GetValidWords(Words)[FMath::RandRange(0, GetValidWords(Words).Num - 1];
+	HiddenWord = Isograms[FMath::RandRange(0, Isograms.Num - 1];
 	Lives = HiddenWord.Len();
 	bGameOver = false;
 
