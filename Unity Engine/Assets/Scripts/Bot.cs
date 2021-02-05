@@ -23,16 +23,14 @@ public class Bot : MonoBehaviour
 
     void Update()
     {
-        Wander();
+        Hide();
     }
 
     
     #region Behavior
-
-    Vector3 wanderTarget = Vector3.zero;
     
-    
-        private void Wander()
+        Vector3 wanderTarget = Vector3.zero;
+    private void Wander()
             {
                 wanderTarget += new Vector3(wanderTargetValue * wanderJitter, 
                     0 , wanderTargetValue * wanderJitter);
@@ -44,18 +42,39 @@ public class Bot : MonoBehaviour
                 
                 Seek(targetWorld);
             }
-        private void Seek(Vector3 playerLocation)
+    private void Seek(Vector3 playerLocation)
             {
                 _agent.SetDestination(playerLocation);
             }
     
-        private void Flee(Vector3 playerLocation)
+    private void Flee(Vector3 playerLocation)
             {
                 Vector3 fleeVector = playerLocation - this.transform.position;
                 _agent.SetDestination(this.transform.position - fleeVector);
             }
-        
-        private void Pursue()
+
+    private void Hide()
+            {
+                float distance = Mathf.Infinity;
+                Vector3 chosenSpot = Vector3.zero;
+    
+                for (int i = 0; i < World.Instance.GetHidingSpots().Length; i++)
+                {
+                    Vector3 hidingVector = World.Instance.GetHidingSpots()[i].transform.position
+                                              - target.transform.position;
+                    Vector3 hidingPosition = World.Instance.GetHidingSpots()[i].transform.position
+                                             + hidingVector.normalized * 10/*<--Distance from tree*/;
+    
+                    if (Vector3.Distance(this.transform.position, hidingPosition) < distance)
+                    {
+                        chosenSpot = hidingPosition;
+                        distance = Vector3.Distance(this.transform.position, hidingPosition);
+                    }
+                }
+                Seek(chosenSpot);
+            }
+
+    private void Pursue()
             {
                 Vector3 targetVector = target.transform.position - this.transform.position;
                 float targetSpeed = target.GetComponent<sfDrive>().currentSpeed;
@@ -76,7 +95,7 @@ public class Bot : MonoBehaviour
                 Seek(target.transform.position + target.transform.forward * (lookAhead * 5));
             }
         
-        private void SeekFleeTesting()
+    private void SeekFleeTesting()
             {
                     Seek(target.transform.position);
     
