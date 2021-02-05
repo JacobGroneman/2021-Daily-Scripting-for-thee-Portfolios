@@ -23,13 +23,16 @@ public class Bot : MonoBehaviour
 
     void Update()
     {
-        Hide();
+        if (CanSeeTarget())
+        {
+            SmartHide();
+        }
     }
 
     
     #region Behavior
-    
-        Vector3 wanderTarget = Vector3.zero;
+
+    Vector3 wanderTarget = Vector3.zero;
     private void Wander()
             {
                 wanderTarget += new Vector3(wanderTargetValue * wanderJitter, 
@@ -53,6 +56,20 @@ public class Bot : MonoBehaviour
                 _agent.SetDestination(this.transform.position - fleeVector);
             }
 
+    private bool CanSeeTarget()
+            {
+                RaycastHit raycastInfo;
+                Vector3 rayToTarget = target.transform.position - this.transform.position;
+                if (Physics.Raycast(this.transform.position, rayToTarget, out raycastInfo))
+                {
+                    if (raycastInfo.transform.gameObject.tag == "Cop")
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
     private void Hide()
             {
                 float distance = Mathf.Infinity;
@@ -73,7 +90,39 @@ public class Bot : MonoBehaviour
                 }
                 Seek(chosenSpot);
             }
+    
+    private void SmartHide()
+            {
+                float distance = Mathf.Infinity;
+                Vector3 chosenSpot = Vector3.zero;
+                Vector3 chosenDirection = Vector3.zero;
+                GameObject chosenHidingSpot = World.Instance.GetHidingSpots()[0];
+            
+                for (int i = 0; i < World.Instance.GetHidingSpots().Length; i++)
+                {
+                    Vector3 hidingVector = World.Instance.GetHidingSpots()[i].transform.position
+                                           - target.transform.position;
+                    Vector3 hidingPosition = World.Instance.GetHidingSpots()[i].transform.position
+                                             + hidingVector.normalized * 10/*<--Distance from tree*/;
+            
+                    if (Vector3.Distance(this.transform.position, hidingPosition) < distance)
+                    {
+                        chosenSpot = hidingPosition;
+                        chosenDirection = hidingVector;
+                        chosenHidingSpot = World.Instance.GetHidingSpots()[i];
+                        distance = Vector3.Distance(this.transform.position, hidingPosition);
+                    }
+                }
 
+                Collider hidingSpotCollider = chosenHidingSpot.GetComponent<Collider>();
+                Ray backRay = new Ray(chosenSpot, -chosenDirection.normalized);
+                RaycastHit info; float castDistance = 100f;
+
+                hidingSpotCollider.Raycast(backRay, out info, castDistance);
+                
+                Seek(info.point + chosenDirection.normalized * 2);
+            }
+    
     private void Pursue()
             {
                 Vector3 targetVector = target.transform.position - this.transform.position;
