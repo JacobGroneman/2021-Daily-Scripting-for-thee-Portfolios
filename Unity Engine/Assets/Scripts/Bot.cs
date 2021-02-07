@@ -11,36 +11,44 @@ public class Bot : MonoBehaviour
         private bool _activateSeek = false;
         private bool _activateFlee = false; 
     //Wander() values
-        float wanderRadius = 10f;
-        float wanderDistance = 10f;
-        float wanderJitter = 1f;
-        float wanderTargetValue = Random.Range(-1.0f, 1.0f);
+        float _wanderRadius = 10f;
+        float _wanderDistance = 10f;
+        float _wanderJitter = 1f;
+        float _wanderTargetValue = Random.Range(-1.0f, 1.0f);
 
-    void Start()
+        void Start()
     {
         _agent = this.GetComponent<NavMeshAgent>();
     }
 
     void Update()
     {
-        if (CanSeeTarget())
+        if (!_isBehaviorSwitchDelay)
         {
-            SmartHide();
+            if (CanSeeTarget() && TargetCanSeeMe())
+            {
+                SmartHide();
+                _isBehaviorSwitchDelay = true;
+                Invoke("BehaviorSwitchDelay", 5);
+            }
+            else
+            {
+                Pursue();
+            }
         }
     }
-
     
     #region Behavior
 
-    Vector3 wanderTarget = Vector3.zero;
+    Vector3 _wanderTarget = Vector3.zero;
     private void Wander()
             {
-                wanderTarget += new Vector3(wanderTargetValue * wanderJitter, 
-                    0 , wanderTargetValue * wanderJitter);
-                wanderTarget.Normalize();
-                wanderTarget *= wanderRadius;
-    
-                Vector3 targetLocal = wanderTarget + new Vector3(0, 0, wanderDistance);
+                _wanderTarget += new Vector3(_wanderTargetValue * _wanderJitter, 
+                    0 , _wanderTargetValue * _wanderJitter);
+                _wanderTarget.Normalize();
+                _wanderTarget *= _wanderRadius;
+
+                Vector3 targetLocal = _wanderTarget + new Vector3(0, 0, _wanderDistance);
                 Vector3 targetWorld = this.gameObject.transform.InverseTransformVector(targetLocal);
                 
                 Seek(targetWorld);
@@ -69,6 +77,21 @@ public class Bot : MonoBehaviour
                 }
                 return false;
             }
+
+    private bool TargetCanSeeMe()
+            {
+                Vector3 toAgent = this.transform.position - target.transform.position;
+                float lookingAngle = Vector3.Angle(target.transform.forward, toAgent);
+
+                if (lookingAngle < 60)
+                {
+                    return true;
+                }
+                
+                return false;
+            }
+
+    private bool _isBehaviorSwitchDelay = false;
 
     private void Hide()
             {
@@ -143,7 +166,15 @@ public class Bot : MonoBehaviour
                     targetVector.magnitude / (_agent.speed + target.GetComponent<sfDrive>().currentSpeed);
                 Seek(target.transform.position + target.transform.forward * (lookAhead * 5));
             }
-        
+
+    public void BehaviorSwitchDelay()
+            {
+                _isBehaviorSwitchDelay = false;
+            }
+            #endregion
+            
+    #region Testing
+    
     private void SeekFleeTesting()
             {
                     Seek(target.transform.position);
@@ -176,6 +207,6 @@ public class Bot : MonoBehaviour
                     Flee(this.transform.position);
                 } while (_activateFlee);
             }
-    #endregion
+            #endregion
 }
     
