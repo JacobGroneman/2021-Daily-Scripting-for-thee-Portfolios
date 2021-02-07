@@ -25,7 +25,11 @@ public class Bot : MonoBehaviour
     {
         if (!_isBehaviorSwitchDelay)
         {
-            if (CanSeeTarget() && TargetCanSeeMe())
+            if (!TargetInRange())
+            {
+                Wander();
+            }
+            else if (CanSeeTarget() && TargetCanSeeMe())
             {
                 SmartHide();
                 _isBehaviorSwitchDelay = true;
@@ -37,7 +41,19 @@ public class Bot : MonoBehaviour
             }
         }
     }
+
+    #region Behavior Conditions
     
+    private bool TargetInRange()
+            {
+                if (Vector3.Distance(this.transform.position, target.transform.position) < 10)
+                {
+                    return true;
+                }
+                return false;
+            }
+            #endregion
+
     #region Behavior
 
     Vector3 _wanderTarget = Vector3.zero;
