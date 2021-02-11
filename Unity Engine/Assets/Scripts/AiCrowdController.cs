@@ -9,24 +9,33 @@ public class AiCrowdController : MonoBehaviour
     
     private Animator _anim;
     private NavMeshAgent _agent;
-    
+
+    private float _speedMultiplier; 
     
     void Start()
     {
-        _goals = GameObject.FindGameObjectsWithTag("Goal");
-        
-        _anim = GetComponent<Animator>();
-        _agent = GetComponent<NavMeshAgent>();
-        
-        WalkToRandomGoal();
+        //World Assignment
+            _goals = GameObject.FindGameObjectsWithTag("Goal");
+        //Component Assignment
+            _anim = GetComponent<Animator>();
+            _agent = GetComponent<NavMeshAgent>();
+        //Movement Assignment
+            _anim.SetFloat("wOffset", Random.Range(0, 1));
+
+            _speedMultiplier = Random.Range(0.5f, 2);
+            _anim.SetFloat("speedMultiplier", _speedMultiplier);
+            _agent.speed = _speedMultiplier;
+        //Execution
+            WalkToRandomGoal();
     }
 
     void Update()
     {
-        if (_agent.remainingDistance < 1) //Remaining Distance to the Current Set Destination
-        {
-            _agent.SetDestination(_goals[Random.Range(0, _goals.Length)].transform.position);
-        }
+        //Destination Arrival Distance Buffer
+            if (_agent.remainingDistance < 1) //Remaining Distance to the Current Set Destination
+            {
+                _agent.SetDestination(_goals[Random.Range(0, _goals.Length)].transform.position);
+            }
     }
     
 
