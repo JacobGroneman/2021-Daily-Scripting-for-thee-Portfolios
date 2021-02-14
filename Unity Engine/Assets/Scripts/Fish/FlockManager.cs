@@ -13,6 +13,10 @@ public class FlockManager : MonoBehaviour
     public float MinVelocity;
     [Range(0.0f, 5.0f)] 
     public float MaxVelocity;
+    [Range(1.0f, 10.0f)]
+    public float NeighborDistance;
+    [Range(0.0f, 5.0f)]
+    public float RotationalVelocity;
     
     public Vector3 SwimLimits = new Vector3(5, 5, 5);
 
@@ -38,6 +42,7 @@ public class FlockManager : MonoBehaviour
                                   Random.Range(-SwimLimits.y, SwimLimits.y),
                                   Random.Range(-SwimLimits.z, SwimLimits.z));
                 Fishes[i] = Instantiate(FishPrefab, pos, Quaternion.identity);
+                Fishes[i].GetComponent<Flock>().FlockManager = this; //This is Genius (if organized)
             }
         }
 }
