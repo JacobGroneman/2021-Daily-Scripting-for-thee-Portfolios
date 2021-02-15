@@ -17,6 +17,10 @@ public class FlockManager : MonoBehaviour
     public float NeighborDistance;
     [Range(0.0f, 5.0f)]
     public float RotationalVelocity;
+
+    public Vector3 GoalPosition;
+    [Range(0, 100f)]
+    public float ChangePositionDynamicPercentage;
     
     public Vector3 SwimLimits = new Vector3(5, 5, 5);
 
@@ -24,14 +28,16 @@ public class FlockManager : MonoBehaviour
     {
         Fishes = new GameObject[NumberOfFish];
         
+        GoalPosition = this.transform.position;
+        
         RandomizeFishStartPosition();
     }
 
     void Update()
     {
-        
+        DynamicChangePosition(ChangePositionDynamicPercentage);
     }
-        
+    
         private void RandomizeFishStartPosition()
         { //Randomizes start Position on All Fishes
           
@@ -43,6 +49,17 @@ public class FlockManager : MonoBehaviour
                                   Random.Range(-SwimLimits.z, SwimLimits.z));
                 Fishes[i] = Instantiate(FishPrefab, pos, Quaternion.identity);
                 Fishes[i].GetComponent<Flock>().FlockManager = this; //This is Genius (if organized)
+            }
+        }
+
+        private void DynamicChangePosition(float percentageOfChance)
+        {
+            if (Random.Range(0, 100) < Mathf.RoundToInt(percentageOfChance)) //% of chance
+            {
+                GoalPosition = this.transform.position + 
+                                new Vector3(Random.Range(-SwimLimits.x, SwimLimits.x),
+                                            Random.Range(-SwimLimits.y, SwimLimits.y),
+                                            Random.Range(-SwimLimits.z, SwimLimits.z));   
             }
         }
 }
