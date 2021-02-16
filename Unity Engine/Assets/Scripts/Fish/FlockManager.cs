@@ -34,7 +34,7 @@ public class FlockManager : MonoBehaviour
     }
 
     void Update()
-    {
+    { 
         DynamicChangePosition(ChangePositionDynamicPercentage);
     }
     

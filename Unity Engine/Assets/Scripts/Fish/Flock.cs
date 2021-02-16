@@ -7,7 +7,8 @@ public class Flock : MonoBehaviour
     public FlockManager FlockManager;
 
     public float Velocity;
-    public bool TurnBack = false;
+    private bool _turnBack = false;
+    public int TurnBackProximity = 50;
     
     [Range(0, 100)]
     public float DynamicFlockVelocityPercentage;
@@ -21,9 +22,9 @@ public class Flock : MonoBehaviour
 
     void Update()
     {
-        ReturnStrayFish();
+        ReturnStrayFish(TurnBackProximity);
 
-        if (TurnBack == false)
+        if (_turnBack == false)
         {
             DynamicBehavior(DynamicFlockVelocityPercentage, DynamicFlockRulesPercentage);
         }
@@ -98,22 +99,33 @@ public class Flock : MonoBehaviour
             }
         }
 
-        void ReturnStrayFish() //Returns any "out-of-bounds" fish to the bounds
+        void ReturnStrayFish(int tbProx) //Returns any "out-of-bounds" fish to the bounds
         {
             Bounds b = new Bounds(FlockManager.transform.position, FlockManager.SwimLimits * 2);
+            Vector3 toBoundsCenter = Vector3.zero;
+            RaycastHit hit = new RaycastHit();
 
             if (!b.Contains(transform.position))
             {
-                TurnBack = true;
+                _turnBack = true;
+                toBoundsCenter = FlockManager.transform.position - this.transform.position;
             }
+            else if (Physics.Raycast //Avoids Obstacles and Reflects fish Away From Them
+                (this.transform.position, this.transform.forward * tbProx, out hit))
+            {
+                _turnBack = true;
+                toBoundsCenter = Vector3.Reflect(this.transform.forward, hit.normal);
+                
+                Debug.DrawRay(this.transform.position, this.transform.forward * tbProx, Color.magenta);
+            }
+            
             else
             {
-                TurnBack = false;
+                _turnBack = false;
             }
 
-            if (TurnBack == true) //Directs out-of-bounds fish to the bound center
+            if (_turnBack == true) //Directs out-of-bounds fish to the bound center
             {
-                Vector3 toBoundsCenter = FlockManager.transform.position - this.transform.position;
                 transform.rotation = Quaternion.Slerp(
                     transform.rotation,
                     Quaternion.LookRotation(toBoundsCenter), 
