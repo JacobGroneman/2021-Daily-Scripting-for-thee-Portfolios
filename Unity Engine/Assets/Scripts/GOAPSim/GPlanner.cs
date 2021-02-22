@@ -31,15 +31,16 @@ public class GPlanner : MonoBehaviour
             {
                 usableActions.Add(a);
             }
-            
-            List<Node> leaves = new List<Node>();
+        }
+
+        List<Node> leaves = new List<Node>();
             
             Node start = new Node
                 (null, 0, GWorld.Instance.GetWorld().GetStates(), null);
 
-            //bool success = BuidGraph(start, leaves, usableActions, goal);
+            bool success = BuildGraph(start, leaves, usableActions, goal);
 
-            //if (!success)
+            if (!success)
             {
                 Debug.Log("No Plan is Available");
                 return null;
@@ -53,7 +54,39 @@ public class GPlanner : MonoBehaviour
                 {
                     cheapest = leaf;
                 }
+                else if (leaf.Cost < cheapest.Cost)
+                {
+                    cheapest = leaf;
+                }
             }
+            
+            List<GAction> result = new List<GAction>();
+            Node n = cheapest;
+
+            while (n != null)
+            {
+                if (n.Action != null)
+                {
+                    result.Insert(0, n.Action);
+                }
+
+                n = n.Parent;
+            }
+            
+            Queue<GAction> queue = new Queue<GAction>();
+
+            foreach (GAction action in result)
+            {
+                queue.Enqueue(action);
+            }
+            
+            Debug.Log("The Plan is: ");
+
+            foreach (GAction action in queue)
+            {
+                Debug.Log("Q: " + action.name);
+            }
+            
+            return queue;
         }
     }
-}
