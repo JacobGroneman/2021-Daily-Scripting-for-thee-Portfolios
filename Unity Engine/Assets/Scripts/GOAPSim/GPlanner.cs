@@ -22,71 +22,144 @@ public class Node
 public class GPlanner : MonoBehaviour
 {
     public Queue<GAction> Plan(List<GAction> actions, Dictionary<string, int> goal, WorldStates states)
-    {
-        List<GAction> usableActions = new List<GAction>();
-
-        foreach (GAction a in actions)
         {
-            if (a.IsAchievable())
-            {
-                usableActions.Add(a);
-            }
-        }
-
-        List<Node> leaves = new List<Node>();
+            List<GAction> usableActions = new List<GAction>();
+    
+                foreach (GAction a in actions)
+                {
+                    if (a.IsAchievable())
+                    {
+                        usableActions.Add(a);
+                    }
+                }
+    
+            List<Node> leaves = new List<Node>();
             
             Node start = new Node
                 (null, 0, GWorld.Instance.GetWorld().GetStates(), null);
 
             bool success = BuildGraph(start, leaves, usableActions, goal);
 
-            if (!success)
-            {
-                Debug.Log("No Plan is Available");
-                return null;
-            }
-            
+                if (!success)
+                {
+                    Debug.Log("No Plan is Available");
+                    return null;
+                }
+                
             Node cheapest = null;
 
-            foreach (Node leaf in leaves)
-            {
-                if (cheapest == null)
+                foreach (Node leaf in leaves)
                 {
-                    cheapest = leaf;
+                    if (cheapest == null)
+                    {
+                        cheapest = leaf;
+                    }
+                    else if (leaf.Cost < cheapest.Cost)
+                    {
+                        cheapest = leaf;
+                    }
                 }
-                else if (leaf.Cost < cheapest.Cost)
-                {
-                    cheapest = leaf;
-                }
-            }
             
             List<GAction> result = new List<GAction>();
             Node n = cheapest;
 
-            while (n != null)
-            {
-                if (n.Action != null)
+                while (n != null)
                 {
-                    result.Insert(0, n.Action);
+                    if (n.Action != null)
+                    {
+                        result.Insert(0, n.Action);
+                    }
+    
+                    n = n.Parent;
                 }
-
-                n = n.Parent;
-            }
             
             Queue<GAction> queue = new Queue<GAction>();
 
-            foreach (GAction action in result)
-            {
-                queue.Enqueue(action);
-            }
+                foreach (GAction action in result)
+                {
+                    queue.Enqueue(action);
+                }
             
             Debug.Log("The Plan is: ");
 
-            foreach (GAction action in queue)
-            {
-                Debug.Log("Q: " + action.name);
-            }
+                foreach (GAction action in queue)
+                {
+                    Debug.Log("Q: " + action.name);
+                }
             
             return queue;
-        }
     }
+
+    private bool BuildGraph
+        (Node parent, List<Node> leaves, List<GAction> usableActions, Dictionary<string, int> goal)
+    {
+        bool foundPath = false;
+
+            foreach (GAction action in usableActions)
+            {
+                if (action.IsAchievableGiven(parent.State))
+                {
+                    Dictionary<string, int> currentState = 
+                        new Dictionary<string, int>(parent.State); //Review this concept
+
+                    foreach (KeyValuePair<string, int> effects in action.Effects)
+                    {
+                        if (!currentState.ContainsKey(effects.Key))
+                        {
+                            currentState.Add(effects.Key, effects.Value);
+                        }
+                    }
+                    
+                    Node node = 
+                        new Node(parent, parent.Cost + action.Cost, currentState, action);
+
+                    if (GoalAchieved(goal, currentState))
+                    {
+                        leaves.Add(node);
+                        foundPath = true;
+                    }
+                    else
+                    { //Becomes Smaller with each recursion.
+                        List<GAction> subset = ActionSubset(usableActions, action);
+                        bool found =
+                            BuildGraph(node, leaves, subset, goal);
+
+                        if (found)
+                        {
+                            foundPath = true;
+                        }
+                    }
+                }
+            } 
+        
+        return foundPath;
+    }
+
+    private bool GoalAchieved(Dictionary<string, int> goal, Dictionary<string, int> state)
+    {//Achieves goal if the state is different
+        foreach (KeyValuePair<string, int> g in goal)
+        {
+            if (!state.ContainsKey(g.Key))
+            {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    private List<GAction> ActionSubset(List<GAction> actions, GAction removeMe)
+    {//Adds actions to the subset action list
+       List<GAction> subset = new List<GAction>();
+
+        foreach (GAction a in actions)
+        {
+            if (!a.Equals(removeMe))
+            {
+                subset.Add(a);
+            }
+        }
+
+        return subset;
+    }
+}
