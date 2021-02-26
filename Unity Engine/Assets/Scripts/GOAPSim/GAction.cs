@@ -17,7 +17,7 @@ public abstract class GAction : MonoBehaviour
     public WorldState AgentBeliefs;
     
     public GameObject Target;
-    public GameObject TargetTag;
+    public string TargetTag;
     
     public NavMeshAgent Agent;
 
