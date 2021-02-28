@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoToHospital : GAction
+public class Register : GAction
 {
     void Start()
     {
-        ActionName = "Go to Hospital";
+        ActionName = "Register";
         Cost = 1;
         Target = null;
-        TargetTag = "Door";
-        Duration = 2;
-        //Preconditions
-        //dictionary AfterEffects.Add("HasArrived", 0)
+        TargetTag = "Reception";
+        Duration = 5;
+        Preconditions.Add("HasArrived", 0);
+        //dictionary AfterEffects.Add("HasRegistered", 0)
         Agent = null;
         // bool Running
     }

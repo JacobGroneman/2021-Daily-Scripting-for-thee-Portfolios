@@ -48,8 +48,8 @@ public class GAgent : MonoBehaviour
         
     void LateUpdate()
     {
-        if (CurrentAction != null && CurrentAction.Running)
-        {
+        if (CurrentAction != null && CurrentAction.Running)               //Achieve Destination Buffer
+        {                                                                            //|
             if (CurrentAction.Agent.hasPath && CurrentAction.Agent.remainingDistance < 1f)//Navmesh
             {
                 if (!_invoked)

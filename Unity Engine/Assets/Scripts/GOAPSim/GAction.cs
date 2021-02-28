@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public abstract class GAction : MonoBehaviour
+public abstract class GAction : MonoBehaviour //I Want Scriptable Object!!
 {
     public bool Running = false;
     
@@ -29,7 +29,7 @@ public abstract class GAction : MonoBehaviour
 
     public void Awake()
         {
-            Agent = this.gameObject.GetComponent<NavMeshAgent>();
+            Agent = this.gameObject.GetComponent<NavMeshAgent>(); //Find Alternative for Scriptable Object Class
     
             if (PreConditions != null)
             {
