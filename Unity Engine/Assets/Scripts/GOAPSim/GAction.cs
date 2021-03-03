@@ -15,6 +15,8 @@ public abstract class GAction : MonoBehaviour //I Want Scriptable Object!!
     public Dictionary<string, int> Preconditions, Effects;
     
     public WorldState AgentBeliefs;
+
+    public GInventory Inventory;
     
     public GameObject Target;
     public string TargetTag;
@@ -28,8 +30,9 @@ public abstract class GAction : MonoBehaviour //I Want Scriptable Object!!
     }
 
     public void Awake()
-        {
+        {//Initialize
             Agent = this.gameObject.GetComponent<NavMeshAgent>(); //Find Alternative for Scriptable Object Class
+            Inventory = this.GetComponent<GAgent>().Inventory;
     
             if (PreConditions != null)
             {
