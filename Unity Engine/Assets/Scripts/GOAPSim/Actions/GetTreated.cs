@@ -12,7 +12,8 @@ public class GetTreated : GAction
         TargetTag = null;
         Duration = 2;
         //Needs a Belief!
-        //dictionary AfterEffects.Add("TreatPatient", 1)
+        Preconditions.Add("AtHospital", 1);
+        //dictionary AfterEffects.Add("IsTreated", 1)
         Agent = null;
         // bool Running
     }

@@ -70,8 +70,8 @@ public class GAgent : MonoBehaviour
                 from entry in Goals orderby entry.Value descending select entry;
 
             foreach (KeyValuePair<SubGoal, int> sg in sortedGoals)
-            {//Takes most important goal and assigns a plan
-                _actionQue = _planner.Plan(Actions, sg.Key.SubGoals, null);
+            {//Takes most important goal and assigns a plan through the planner
+                _actionQue = _planner.Plan(Actions, sg.Key.SubGoals, Beliefs);
                 
                 if (_actionQue != null)
                 {

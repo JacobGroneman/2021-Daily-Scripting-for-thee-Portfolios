@@ -17,11 +17,28 @@ public class Node
         this.State = new Dictionary<string, int>(allStates);
         this.Action = action;
     }
+    
+    public Node
+    (Node parent, float cost, Dictionary<string, int> allStates, 
+        Dictionary<string, int> beliefStates, GAction action)
+    {
+        this.Parent = parent;
+        this.Cost = cost;
+        this.State = new Dictionary<string, int>(allStates);
+            foreach (KeyValuePair<string, int> b in beliefStates)
+            {
+                if (!this.State.ContainsKey(b.Key))
+                {
+                    this.State.Add(b.Key, b.Value);
+                }
+            }
+        this.Action = action;
+    }
 }
 
 public class GPlanner : MonoBehaviour
 {
-    public Queue<GAction> Plan(List<GAction> actions, Dictionary<string, int> goal, WorldStates states)
+    public Queue<GAction> Plan(List<GAction> actions, Dictionary<string, int> goal, WorldStates beliefstates)
         {
             List<GAction> usableActions = new List<GAction>();
     
@@ -36,7 +53,8 @@ public class GPlanner : MonoBehaviour
             List<Node> leaves = new List<Node>();
             
             Node start = new Node
-                (null, 0, GWorld.Instance.GetWorld().GetStates(), null);
+                (null, 0, GWorld.Instance.GetWorld().GetStates(), 
+                beliefstates.GetStates(), null);
 
             bool success = BuildGraph(start, leaves, usableActions, goal);
 
@@ -110,7 +128,7 @@ public class GPlanner : MonoBehaviour
                         }
                     }
                     
-                    Node node = 
+                    Node node = //Has implied Beliefs
                         new Node(parent, parent.Cost + action.Cost, currentState, action);
 
                     if (GoalAchieved(goal, currentState))

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Nurse : GAgent
 {
-    void Start()
+    new void Start() //"new" 'Cause of GAgent's Start()
     {
         base.Start();
         SubGoal s1 = new SubGoal("TreatPatient", 1, true);

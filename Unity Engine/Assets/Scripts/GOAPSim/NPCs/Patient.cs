@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Patient : GAgent
-{
-    void Start()
+{ 
+    new void Start() //(new is because GAgent has a Start())
     {
-        base.Start();
-        SubGoal s1 = new SubGoal("isWaiting", 1, true);
-        Goals.Add(s1, 3);
+        base.Start();//GAgent inherited Start()
+        
+        //Sub Goals
+            SubGoal s1 = new SubGoal("IsWaiting", 1, true);
+            Goals.Add(s1, 3);
+            
+            SubGoal s2 = new SubGoal("IsTreated", 1, true);
+            Goals.Add(s2, 5);
     }
 }

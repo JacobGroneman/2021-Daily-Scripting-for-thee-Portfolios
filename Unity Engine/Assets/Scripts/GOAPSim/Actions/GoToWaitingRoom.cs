@@ -25,6 +25,7 @@ public class GoToWaitingRoom : GAction
         {
             GWorld.Instance.GetWorld().ModifyState("Waiting", 1);
             GWorld.Instance.AddPatient(this.gameObject); //Adds Itself to the Waiting Que
+            Beliefs.ModifyState("AtHospital", 1);
             
             return true;
         }
