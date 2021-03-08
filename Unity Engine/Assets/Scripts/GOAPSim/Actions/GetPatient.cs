@@ -15,7 +15,7 @@ public class GetPatient : GAction
         Duration = 2;
         Preconditions.Add("Waiting", 1);
         Preconditions.Add("FreeCubicle", 1);
-        //dictionary AfterEffects.Add("TreatPatient", 1)
+        //dictionary AfterEffects.Add("PatientPickedUp", 1)
         Agent = null;
         // bool Running
     }
