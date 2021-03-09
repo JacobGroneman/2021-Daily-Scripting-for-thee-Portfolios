@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GInventory
 {
-  private List<GameObject> _items = new List<GameObject>();
+  public List<GameObject> _items = new List<GameObject>(); //Public for Debugging (if a visualizer is created)
 
   public void AddItem(GameObject item)
   {

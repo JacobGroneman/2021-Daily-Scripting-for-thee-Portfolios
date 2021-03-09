@@ -32,9 +32,9 @@ public class GetTreated : GAction
         public override bool PostPerform()
         {
             GWorld.Instance.GetWorld().ModifyState("Treated", 1);
-            
+            Beliefs.ModifyState("IsCured", 1); //For Patients
             Inventory.RemoveGameObject(Target);
-            
+
             return true;
         }
 }
