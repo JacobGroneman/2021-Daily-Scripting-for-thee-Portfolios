@@ -11,8 +11,10 @@ public abstract class GAction : MonoBehaviour //I Want Scriptable Object!!
     public float Cost = 1.0f;
     public float Duration;
 
-    public WorldState[] PreConditions, AfterEffects;
-    public Dictionary<string, int> Preconditions, Effects;
+    public WorldState[] PreConditions; 
+    public WorldState[] AfterEffects;
+    public Dictionary<string, int> Preconditions; 
+    public Dictionary<string, int> Effects;
     
     public WorldState AgentBeliefs;
     public WorldStates Beliefs;

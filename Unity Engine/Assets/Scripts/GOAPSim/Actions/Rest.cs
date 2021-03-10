@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoHome : GAction
+public class Rest : GAction
 {
     void Start()
     {
-        ActionName = "GoHome";
+        ActionName = "Rest";
         Cost = 1;
         Target = null;
-        TargetTag = "Home";
-        Duration = 0;
-        Preconditions.Add("IsTreated", 1);
-        //AfterEffects.Add("IsHome", 1); //e.x. Patient.s3
+        TargetTag = "BreakRoom";
+        Duration = 5;
+        Preconditions.Add("IsExhausted", 0);
+        //AfterEffects.Add("IsRested", 1); //e.x. Patient.s3
         Agent = null;
         // bool Running
     }
@@ -23,7 +23,7 @@ public class GoHome : GAction
     
         public override bool PostPerform()
         {
-            Destroy(this.gameObject); //Either this or an object pool
+            Beliefs.RemoveState("Exhausted");
             return true;
         }
 }

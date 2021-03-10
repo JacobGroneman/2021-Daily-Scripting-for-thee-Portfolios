@@ -35,9 +35,9 @@ public class WorldStates
             States.Add(key, value);
         }
     
-        private void RemoveState(string key)
+        public void RemoveState(string key)
         {
-            if (States.ContainsKey(key))
+            if (HasState(key))
             {
                 States.Remove(key);
             }
@@ -62,13 +62,13 @@ public class WorldStates
         
         public void SetState(string key, int value)
         {
-            if (States.ContainsKey(key))
+            if (HasState(key))
             {
                 States[key] = value;
             }
             else
             {
-                States.Add(key, value);
+                AddState(key, value);
             }
         }
         #endregion

@@ -12,7 +12,7 @@ public class SubGoal
     {
         SubGoals = new Dictionary<string, int>();
         SubGoals.Add(s, i);
-        Remove = r;
+        Remove = r; //Means the subgoal is recurring
     }
 }
 
