@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class LearningTouchScreens : MonoBehaviour
 {
     //Touch
-        public Text PhaseDisplayText;
+        private Text _phaseDisplayText;
     
         private Touch _touch;
         private float _touchEndTime;
@@ -16,7 +16,7 @@ public class LearningTouchScreens : MonoBehaviour
     void Start()
     {
         #region Assignment
-            PhaseDisplayText = 
+            _phaseDisplayText = 
                 GameObject.Find("PhaseDisplayText").GetComponent<Text>();
                 #endregion
     }
@@ -27,7 +27,7 @@ public class LearningTouchScreens : MonoBehaviour
             if (Input.touchCount > 0) //touch
             {
                 _touch = Input.GetTouch(0);
-                PhaseDisplayText.text = _touch.phase.ToString(); //Displays the touch phase
+                _phaseDisplayText.text = _touch.phase.ToString(); //Displays the touch phase
     
                 if (_touch.phase == TouchPhase.Ended) //Touch Ends
                 {
@@ -36,7 +36,7 @@ public class LearningTouchScreens : MonoBehaviour
             }
             else if (Time.time - _touchEndTime > _displayTime)
             {
-                PhaseDisplayText.text = "";
+                _phaseDisplayText.text = "";
             }
             #endregion
     }
