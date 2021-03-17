@@ -9,17 +9,17 @@ public class CharacterInventory : MonoBehaviour
         
     }
 
-        void StoreItem() {}
+        void StoreItem(ItemPickUp itemToStore) {}
     
         void TryPickUp() {}
     
-        void AddItemToInv() {}
+        void AddItemToInv(bool itemAdded) {}
     
-        void AddItemToHotBar() {}
+        void AddItemToHotBar(InventoryEntry itemForHotBar) {}
 
         void DisplayInventory() {}
         
         void FillInventoryDisplay() {}
         
-        void TriggerItemUse() {}
+        void TriggerItemUse(int itemToUseID) {}
 }
