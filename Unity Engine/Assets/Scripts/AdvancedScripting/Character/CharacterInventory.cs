@@ -53,11 +53,11 @@ public class CharacterInventory : MonoBehaviour
                                 AddItemToHotBar(ie.Value);
                                 inInventory = true;
                                 DestroyObject(itemEntry.invEntry.gameObject); //Check this
-                                break;
+                                break;//foreach break
                             }
                             else
                             {
-                                inInventory = false;
+                                inInventory = false; //Just a safety feature I guess
                             }
                         }
                     }
@@ -100,6 +100,22 @@ public class CharacterInventory : MonoBehaviour
             
             finishedAdding = true;
             return finishedAdding; //Their Code is a tad wonky Lol!!!
+        }
+
+        int IncreaseID(int currentID)
+        {
+            int newID = 1;
+
+            for (int itemCount = 1; itemCount <= itemsInInventory.Count; itemCount++)
+            {
+                if (itemsInInventory.ContainsKey(newID))
+                {
+                    newID++;
+                }
+                else return newID;
+            }
+
+            return newID;
         }
     
         void AddItemToHotBar(InventoryEntry itemForHotBar) {}
