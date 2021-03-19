@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class CharacterInventory : MonoBehaviour
@@ -81,8 +82,25 @@ public class CharacterInventory : MonoBehaviour
                 }
             }
         }
-    
-        void AddItemToInv(bool itemAdded) {}
+        //For Newly Added Items
+        bool AddItemToInv(bool finishedAdding)
+        {
+            itemsInInventory.Add
+            (idCount, new InventoryEntry
+            (itemEntry.stackSize, Instantiate(itemEntry.invEntry), itemEntry.hbSprite));
+            
+            DestroyObject(itemEntry.invEntry.gameObject);
+            
+            FillInventoryDisplay();
+            AddItemToHotBar(itemsInInventory[idCount]);
+
+            idCount = IncreaseID(idCount);
+            
+            //Reset Item Entry
+            
+            finishedAdding = true;
+            return finishedAdding; //Their Code is a tad wonky Lol!!!
+        }
     
         void AddItemToHotBar(InventoryEntry itemForHotBar) {}
 
