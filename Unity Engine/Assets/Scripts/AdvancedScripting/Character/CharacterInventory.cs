@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
+using UnityEngine.UI;S
 
 public class CharacterInventory : MonoBehaviour
 {
@@ -117,12 +118,72 @@ public class CharacterInventory : MonoBehaviour
 
             return newID;
         }
-    
-        void AddItemToHotBar(InventoryEntry itemForHotBar) {}
 
-        void DisplayInventory() {}
-        
-        void FillInventoryDisplay() {}
+        void AddItemToHotBar(InventoryEntry itemForHotBar)
+        {
+            int hotBarCounter = 0;
+            bool increaseCount = false;
+            
+            //Open Hot Bar Slots:
+            foreach (Image images in hotBarDisplayHolders)
+            {
+                hotBarCounter += 1;
+
+                if (itemForHotBar.hotBarSlot == 0)
+                {
+                    if (images.sprite == null)
+                    {
+                        //adds item to hotBar
+                        itemForHotBar.hotBarSlot = hotBarCounter;
+                        //show sprite in hotBar
+                        images.sprite = itemForHotBar.hbSprite;
+                        increaseCount = true;
+                        break;
+                    }
+                }
+                else if (itemForHotBar.invEntry.itemDefinition.isStackable)
+                {
+                    increaseCount = true;
+                }
+            }
+
+            if (increaseCount)
+            {
+                hotBarDisplayHolders[itemForHotBar.hotBarSlot - 1].GetComponentInChildren<Text>().text
+                    = itemForHotBar.stackSize.ToString();
+            }
+            
+            increaseCount = false;
+        }
+
+        void DisplayInventoryUI()
+        {
+            if (InventoryDisplayHolder.activeSelf == true)
+            {
+                InventoryDisplayHolder.SetActive(false);
+            }
+            else
+            {
+                InventoryDisplayHolder.SetActive(true); //I like this toggle method!
+            }
+        }
+
+        void FillInventoryDisplay()
+        {
+            int slotCounter = 9;
+
+            foreach (var VARIABLE in KeyValuePair<int, InventoryEntry> ie in itemsInDictionary)
+            {
+                slotCounter += 1;
+                InventoryDisplaySlots[slotCounter].sprite = ie.Value.hbSprite;
+                ie.Value.inventorySlot = slotCounter - 9;
+            }
+            while (slotCounter < 29)
+            {
+                slotCounter++;
+                InventoryDisplaySlots[slotCounter].sprite = null;
+            }
+        }
         
         void TriggerItemUse(int itemToUseID) {}
 }
