@@ -184,6 +184,68 @@ public class CharacterInventory : MonoBehaviour
                 InventoryDisplaySlots[slotCounter].sprite = null;
             }
         }
-        
-        void TriggerItemUse(int itemToUseID) {}
+
+        void TriggerItemUse(int itemToUseID)
+        {
+            bool triggerItem = false;
+
+            foreach (KeyValuePair<int, InventoryEntry> ie in itemsInInventory)
+            {//HotBarSlots are more than 100
+                if (itemToUseID > 100)
+                {
+                    itemToUseID -= 100;
+
+                    if (ie.Value.hotBarSlot == itemToUseID)
+                    {
+                        triggerItem = true;
+                    }
+                }
+                else
+                {//less than 100 (Inventory Slots)
+                    if (ie.Value.inventorySlot == itemToUseID)
+                    {
+                        triggerItem = true;
+                    }
+                }
+
+                if (triggerItem)
+                {
+                    if (ie.Value.stackSize == 1)
+                    {
+                        if (ie.Value.inventorySlot.itemDefinition.isStackable)
+                        {
+                            if (ie.Value.hotBarSlot != 0)
+                            {
+                                hotBarDisplayHolders[ie.Value.hotBarSlot - 1].sprite = null;
+                                hotBarDisplayHolders[ie.Value.hotBarSlot - 1]
+                                    .GetComponentInChildren<Text>().text = "0";
+                            }
+
+                            ie.Value.invEntry.UseItem();
+                            itemsInInventory.Remove(ie.Key);
+                            break;
+                        }
+                        else
+                        {//not stackable
+                            ie.Value.invEntry.UseItem();
+                            if (!ie.Value.invEntry.itemDefinition.isIndestructable)
+                            {
+                                itemsInInventory.Remove(ie.Key);
+                                break;
+                            }
+                        }
+                    }
+                    else //!triggerItem
+                    {
+                        ie.Value.invEntry.UseItem();
+                        ie.Value.stackSize -= 1;
+                        hotBarDisplayHolders[ie.Value.hotBarSlot - 1]
+                            .GetComponentInChildren<Text>().text = ie.Value.stackSize.ToString();
+                        break;
+                    }
+                }
+            }
+            
+            FillInventoryDisplay();
+        }
 }
