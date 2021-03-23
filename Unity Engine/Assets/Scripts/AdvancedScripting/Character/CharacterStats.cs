@@ -12,12 +12,22 @@ public class CharacterStats : MonoBehaviour
     #region Weapon & Armor Changes
         void ChangeWeapon(ItemPickUp weaponPickUp)
         {
-                
+            if (!characterDefinition.unEquipWeapon
+                (weaponPickUp, charInv, characterWeaponSlot))
+            {
+                characterDefinition.EquipWeapon
+                    (weaponPickUp, charInv, characterWeaponSlot);
+            }
         }
     
         void ChangeArmor(ItemPickup armorPickup)
         {
-                
+            if (!characterDefinition.unEquipArmor
+                (armorPickUp, charInv));
+            {
+                characterDefinition.EquipArmor
+                    (amorPickUp, charInv);
+            }
         }
         #endregion
 }
