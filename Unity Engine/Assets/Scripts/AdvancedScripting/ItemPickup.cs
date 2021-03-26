@@ -6,23 +6,23 @@ public class ItemPickup : MonoBehaviour
 {
     public ItemPickups_SO ItemDefinition;
 
-    public CharacterStats CharStats;
-    private CharacterInventory _charInventory;
+    public CharacterStats charStats;
+    private CharacterInventory charInventory;
 
-    private GameObject _foundStats;
+    private GameObject foundStats;
     
     //Constructors
 
     void Start()
     {
         #region Initialize
-            _foundStats = GameObject.FindGameObjectWithTag("Player");
-            CharStats = _foundStats.GetComponent<CharacterStats>();
+            foundStats = GameObject.FindGameObjectWithTag("Player");
+            charStats = foundStats.GetComponent<CharacterStats>();
             #endregion
     }
         void StoreItem()
         {
-            //_charInventory.StoreItem();
+            charInventory.StoreItem(this);
         }
 
         public void UseItem()
@@ -30,22 +30,22 @@ public class ItemPickup : MonoBehaviour
             switch (ItemDefinition.itemType)
             {
                 case ItemTypeDefinitions.HEALTH:
-                    CharStats.ApplyHealth(ItemDefinition.itemAmount);
+                    charStats.ApplyHealth(ItemDefinition.itemAmount);
                     Debug.Log(CharStats.GetHealth());
                     break;
                 case ItemTypeDefinitions.MANA:
-                    CharStats.ApplyMana(ItemDefinition.itemAmount);
+                    charStats.ApplyMana(ItemDefinition.itemAmount);
                     break;
                 case ItemTypeDefinitions.WEALTH:
-                    CharStats.GiveWealth(ItemDefinition.itemAmount);
+                    charStats.GiveWealth(ItemDefinition.itemAmount);
                     break;
                 case ItemTypeDefinitions.WEAPON:
                     //Change Weapon
-                    CharStats.ChangeWeapon();
+                    charStats.ChangeWeapon();
                     break;
                 case ItemTypeDefinitions.ARMOR:
                     //Change Armor
-                    CharStats.ChangeArmor();
+                    charStats.ChangeArmor();
                     break;
             }
         }

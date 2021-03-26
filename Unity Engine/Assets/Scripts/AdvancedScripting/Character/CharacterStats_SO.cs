@@ -71,6 +71,7 @@ public class CharacterStats_SO : MonoBehaviour
                 currentResistance += armorPickup.itemDefinition.itemAmount;
                 break;
         }
+        return true;
     }
     public bool UnEquipArmor() {}
 }
