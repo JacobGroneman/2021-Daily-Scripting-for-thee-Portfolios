@@ -156,7 +156,7 @@ public class CharacterInventory : MonoBehaviour
             increaseCount = false;
         }
 
-        void DisplayInventoryUI()
+        public void DisplayInventoryUI()
         {
             if (InventoryDisplayHolder.activeSelf == true)
             {
@@ -185,7 +185,7 @@ public class CharacterInventory : MonoBehaviour
             }
         }
 
-        void TriggerItemUse(int itemToUseID)
+        public void TriggerItemUse(int itemToUseID)
         {
             bool triggerItem = false;
 
