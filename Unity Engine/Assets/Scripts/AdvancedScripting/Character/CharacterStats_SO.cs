@@ -36,6 +36,41 @@ public class CharacterStats_SO : MonoBehaviour
         currentDamage = baseDamage + weapon.itemDefinition.itemAmount;
     }
 
+    public bool EquipArmor(ItemPickup armorPickup, CharacterInventory charInventory)
+    {
+        switch (ArmorPickup.ItemDefinition.itemArmorSubType)
+        {
+            case ItemArmorSubType.Head:
+                charInventory.inventoryDisplaySlots[3].sprite =
+                    armorPickup.ItemDefinition.itemIcon;
+                headArmor = armorPickup;
+                currentResistance += armorPickup.itemDefinition.itemAmount;
+                break;
+            case ItemArmorSubType.Chest:
+                charInventory.inventoryDisplaySlots[4].sprite =
+                    armorPickup.ItemDefinition.itemIcon;
+                chestArmor = armorPickup;
+                currentResistance += armorPickup.itemDefinition.itemAmount;
+                break;
+            case ItemArmorSubType.Hands:
+                charInventory.inventoryDisplaySlots[5].sprite =
+                    armorPickup.ItemDefinition.itemIcon;
+                handArmor = armorPickup;
+                currentResistance += armorPickup.itemDefinition.itemAmount;
+                break;
+            case ItemArmorSubType.Legs:
+                charInventory.inventoryDisplaySlots[6].sprite =
+                    armorPickup.ItemDefinition.itemIcon;
+                legArmor = armorPickup;
+                currentResistance += armorPickup.itemDefinition.itemAmount;
+                break;
+            case ItemArmorSubType.Boots:
+                charInventory.inventoryDisplaySlots[7].sprite =
+                    armorPickup.ItemDefinition.itemIcon;
+                footArmor = armorPickup;
+                currentResistance += armorPickup.itemDefinition.itemAmount;
+                break;
+        }
+    }
     public bool UnEquipArmor() {}
-    public bool EquipArmor() {}
 }
