@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UserInput : MonoBehaviour
+public class InputManager : MonoBehaviour
 {
     void Update()
     {
@@ -30,6 +30,8 @@ public class UserInput : MonoBehaviour
                     ICommand click = new ClickCommand(
                             hitInfo.collider.gameObject,
                             new Color(Random.value, Random.value, Random.value));
+                    
+                    CommandManager.Instance.AddCommandToBuffer(click);
                 }
             }
         }
