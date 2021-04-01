@@ -19,6 +19,6 @@ public class Down : ICommand
     
         public void Undo()
         {
-            
+            _transform.Translate(Vector3.up * _velocity * Time.deltaTime);
         }
 }

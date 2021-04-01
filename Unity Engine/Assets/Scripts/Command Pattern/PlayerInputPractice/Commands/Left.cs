@@ -19,6 +19,6 @@ public class Left : ICommand
     
         public void Undo()
         {
-            
+            _transform.Translate(Vector3.right * _velocity * Time.deltaTime);
         }
 }
