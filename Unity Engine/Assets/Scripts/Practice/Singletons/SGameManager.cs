@@ -12,7 +12,9 @@ public class SGameManager : MonoBehaviour
             {
                 if (_instance == null)
                 {
-                    Debug.LogError("SGameManager = NULL!");
+                    //Debug.LogError("SGameManager is NULL!");
+                    GameObject gameManagerObject = new GameObject("Game_Manager");
+                    gameManagerObject.AddComponent<SGameManager>();
                 }
                 
                 return _instance;

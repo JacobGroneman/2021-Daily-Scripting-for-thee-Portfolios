@@ -15,5 +15,10 @@ public class sPlayer : MonoBehaviour
         {
             sUIManager.Instance.UpdateScore(40);
         }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            sSpawnManager.Instance.StartSpawning();
+        }
     }
 }

@@ -14,7 +14,9 @@ public class sUIManager : MonoBehaviour
             {
                 if (_instance == null)
                 {
-                    Debug.Log("sUIManager is NULL!");
+                    //Debug.Log("sUIManager is NULL!");
+                    GameObject UIManagerObject = new GameObject("UI_Manager");
+                    UIManagerObject.AddComponent<sUIManager>();
                 }
     
                 return _instance;
