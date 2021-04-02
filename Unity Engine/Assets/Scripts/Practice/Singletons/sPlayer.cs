@@ -10,5 +10,10 @@ public class sPlayer : MonoBehaviour
         {
             SGameManager.Instance.DisplayName();
         }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            sUIManager.Instance.UpdateScore(40);
+        }
     }
 }

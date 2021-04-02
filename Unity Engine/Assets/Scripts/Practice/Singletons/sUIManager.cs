@@ -2,31 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SGameManager : MonoBehaviour
+public class sUIManager : MonoBehaviour
 {
+    private int _score;
+    
     #region Singleton
-        private static SGameManager _instance;
-        public static SGameManager Instance
+        private static sUIManager _instance;
+        public static sUIManager Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    Debug.LogError("SGameManager = NULL!");
+                    Debug.Log("sUIManager is NULL!");
                 }
-                
+    
                 return _instance;
             }
         }
         #endregion
-    
+        
     private void Awake()
     {
         _instance = this;
     }
-        public void DisplayName()
+        public void UpdateScore(int score)
         {
-            Debug.Log("The Name is Pickles Baxter!");
+            _score = score;
+            Debug.Log("Score Updated.");
         }
-    
 }
