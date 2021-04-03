@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class sSpawnManager : MonoBehaviour
+public class sSpawnManager : sMonoSingleton<sSpawnManager>
 {
-    #region Singleton
+    /*#region Singleton
         private static sSpawnManager _instance;
         public static sSpawnManager Instance
         {
@@ -20,11 +20,10 @@ public class sSpawnManager : MonoBehaviour
                 return _instance;
             }
         }
-        #endregion
-    
-    private void Awake()
+        #endregion*/
+    public override void Initialize()
     {
-        _instance = this;
+        Debug.Log("Player Initialized");
     }
         public void StartSpawning()
         {
