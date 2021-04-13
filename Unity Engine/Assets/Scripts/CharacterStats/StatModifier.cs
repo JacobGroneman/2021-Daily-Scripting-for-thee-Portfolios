@@ -26,7 +26,7 @@
 
 public enum StatModType
 {
-  Flat,
-  PercentAdd,
-  PercentMulti
+  Flat = 100,
+  PercentAdd = 200,
+  PercentMulti = 300
 }//This enum utilization concept is cool
