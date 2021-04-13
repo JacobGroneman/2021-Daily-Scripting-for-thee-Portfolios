@@ -54,15 +54,29 @@ public class CharacterStat
             private float CalculateFinalValue()
             {
                 float finalValue = BaseValue;
+                float sumPercentAdd = 0; // for StatModType.PercentAdd
 
                 for (int i = 0; i < _statModifiers.Count; i++)
                 {
                     StatModifier mod = _statModifiers[i];
+                    
                         if (mod.Type == StatModType.Flat)
                         {
                             finalValue += mod.Value;
                         }
-                        else if (mod.Type == StatModType.Percent)
+                        else if (mod.Type == StatModType.PercentAdd)
+                        {
+                            sumPercentAdd += mod.Value;
+                            
+                            //When all mods are accounted or mod != type
+                                if (i + 1 >= _statModifiers.Count || 
+                                    _statModifiers[i + 1].Type != StatModType.PercentAdd)
+                                {
+                                    finalValue *= 1 + sumPercentAdd; //times sum to final value
+                                    sumPercentAdd = 0; //reset the sum tally for reuse
+                                }
+                        }
+                        else if (mod.Type == StatModType.PercentMulti)
                         {
                             finalValue *= 1 + mod.Value;
                         }
