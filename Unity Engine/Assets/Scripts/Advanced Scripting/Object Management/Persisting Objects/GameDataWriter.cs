@@ -47,15 +47,15 @@ public class GameDataReader
         #endregion
         
     //Reading Data
-        private int ReadInt()
+        public int ReadInt()
         {
             return _reader.ReadInt32();
         }
-        private float ReadFloat()
+        public float ReadFloat()
         {
             return _reader.ReadSingle();
         }
-        private Vector3 ReadVector3()
+        public Vector3 ReadVector3()
         {
             Vector3 value;
                 value.x = _reader.ReadSingle();
@@ -64,7 +64,7 @@ public class GameDataReader
             
             return value;
         }
-        private Quaternion ReadQuaternion()
+        public Quaternion ReadQuaternion()
         {
             Quaternion value;
                 value.x = _reader.ReadSingle();
