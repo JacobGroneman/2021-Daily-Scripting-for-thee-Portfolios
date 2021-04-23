@@ -7,9 +7,9 @@ using File = UnityEngine.Windows.File;
 public class Game : PersistableObject
 {
     public PersistentStorage Storage;
-    
-    public PersistableObject Prefab;
-    private List<PersistableObject> _objects;
+
+    public vShapeFactory ShapeFactory;
+        private List<vShape> _shapes;
 
     public KeyCode //This is nice
         CreateKey = KeyCode.C,
@@ -20,7 +20,7 @@ public class Game : PersistableObject
     void Awake()
     {
         #region Initialize
-            _objects = new List<PersistableObject>();
+            _shapes = new List<vShape>();
             #endregion
     }
     
@@ -45,16 +45,16 @@ public class Game : PersistableObject
     }
 
     #region Instantiate
-        private void CreateObject()
+        private void CreateShape()
         {
-            PersistableObject obj = Instantiate(Prefab);
+            vShape instance = ShapeFactory.GetRandom();
             
-            Transform t = obj.transform;
+            Transform t = instance.transform;
                 t.localPosition = Random.insideUnitSphere * 5f;
                 t.localRotation = Random.rotation;
                 t.localScale = Vector3.one * Random.Range(0.1f, 1f);
                 
-                _objects.Add(obj);
+                _shapes.Add(instance);
         }
         #endregion
     
@@ -80,9 +80,9 @@ public class Game : PersistableObject
             int count = reader.ReadInt();
                 for (int i = 0; i < count; i++)
                 {
-                    PersistableObject obj = Instantiate(Prefab);
-                        obj.Load(reader);
-                        _objects.Add(obj);
+                    vShape instance = ShapeFactory.Get(0);
+                        instance.Load(reader);
+                        _shapes.Add(instance);
                 }
         }
         #endregion
