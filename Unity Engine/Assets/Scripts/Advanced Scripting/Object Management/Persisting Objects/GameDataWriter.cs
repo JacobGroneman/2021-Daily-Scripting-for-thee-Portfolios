@@ -6,7 +6,7 @@ public class GameDataWriter
     private BinaryWriter _writer;
 
     #region Constructor
-        private GameDataWriter(BinaryWriter writer)
+        public GameDataWriter(BinaryWriter writer)
         {
             this._writer = writer;
         }
@@ -40,7 +40,7 @@ public class GameDataReader
     private BinaryReader _reader;
 
     #region Constructor
-        private GameDataReader(BinaryReader reader)
+        public GameDataReader(BinaryReader reader)
         {
             this._reader = reader;
         }

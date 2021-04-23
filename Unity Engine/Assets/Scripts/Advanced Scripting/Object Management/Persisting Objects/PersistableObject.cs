@@ -6,14 +6,14 @@ using UnityEngine;
 public class PersistableObject : MonoBehaviour
 {
     #region Save/Load
-        public void Save(GameDataWriter writer)
+        public virtual void Save(GameDataWriter writer)
         {
             //Transform
                 writer.Write(transform.localPosition);
                 writer.Write(transform.localRotation); //Thank You Polymorphism
                 writer.Write(transform.localScale);
         }
-        public void Load(GameDataReader reader)
+        public virtual void Load(GameDataReader reader)
         {
             //Transform
                 transform.localPosition = reader.ReadVector3();
