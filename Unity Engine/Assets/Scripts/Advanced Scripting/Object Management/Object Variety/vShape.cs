@@ -20,4 +20,12 @@ public class vShape : PersistableObject
         }
     }
         private int _shapeID = int.MinValue;
+    
+    public int MaterialID { get; private set; }
+
+        public void SetMaterial(Material material, int materialID)
+        {
+            GetComponent<MeshRenderer>().material = material;
+            MaterialID = materialID;
+        }
 }

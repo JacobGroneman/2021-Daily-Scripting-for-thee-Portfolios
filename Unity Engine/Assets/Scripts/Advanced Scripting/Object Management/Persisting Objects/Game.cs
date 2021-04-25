@@ -7,8 +7,9 @@ using File = UnityEngine.Windows.File;
 public class Game : PersistableObject
 {
     public PersistentStorage Storage;
+        private const int SaveVersion = 1;
 
-    public vShapeFactory ShapeFactory;
+        public vShapeFactory ShapeFactory;
         private List<vShape> _shapes;
 
     public KeyCode //This is nice
@@ -28,7 +29,7 @@ public class Game : PersistableObject
     {
         if (Input.GetKeyDown(CreateKey))
         {
-            CreateObject();
+            CreateShape();
         }
         else if(Input.GetKey(NewGameKey))
         {
@@ -61,29 +62,56 @@ public class Game : PersistableObject
     #region Scene
         private void BeginNewGame()
         {
-            for (int i = 0; i < _objects.Count; i++)
+            for (int i = 0; i < _shapes.Count; i++)
             {
-                Destroy(_objects[i].gameObject);
+                Destroy(_shapes[i].gameObject);
             }
-            _objects.Clear();
+            _shapes.Clear();
         }
         public override void Save(GameDataWriter writer)
         {
-            writer.Write(_objects.Count);
-                for (int i = 0; i < _objects.Count; i++)
+            writer.Write(-SaveVersion);//Always SaveVersion < 0 for clarity.
+            
+            writer.Write(_shapes.Count);
+                for (int i = 0; i < _shapes.Count; i++)
                 {
-                    _objects[i].Save(writer);
+                    writer.Write(_shapes[i].ShapeID);
+                    writer.Write(_shapes[i].MaterialID);
+                    
+                    _shapes[i].Save(writer);
                 }
         }
         public override void Load(GameDataReader reader)
         {
-            int count = reader.ReadInt();
+            int version = -reader.ReadInt();//Flips +- again
+                if (version > SaveVersion)
+                {
+                    Debug.LogError("Unsupported (future)save version" + version);
+                    return;
+                }
+            int count = version <= 0 ? -version : reader.ReadInt(); //Genius (see below code)
                 for (int i = 0; i < count; i++)
                 {
-                    vShape instance = ShapeFactory.Get(0);
+                    int shapeID = version > 0 ? reader.ReadInt() : 0;
+                    int materialID = version > 0 ? reader.ReadInt() : 0;
+                    
+                    vShape instance = ShapeFactory.Get(shapeID);
                         instance.Load(reader);
                         _shapes.Add(instance);
                 }
         }
         #endregion
 }
+
+/* *int version = -reader.ReadInt();
+	int count;
+		if (version <= 0) 
+		{
+			count = -version;
+		}
+		else 
+		{
+			count = reader.ReadInt();
+		} */
+
+/*ternary operations are rad!*/
