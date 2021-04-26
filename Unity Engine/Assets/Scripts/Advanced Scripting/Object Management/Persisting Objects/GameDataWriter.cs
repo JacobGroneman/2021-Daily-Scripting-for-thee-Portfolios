@@ -33,16 +33,26 @@ public class GameDataWriter
             _writer.Write(value.y);
             _writer.Write(value.z);
         }
+
+        public void Write(Color value)
+        {
+            _writer.Write(value.r);
+            _writer.Write(value.g);
+            _writer.Write(value.b);
+            _writer.Write(value.a);
+        }
 }
 
 public class GameDataReader
 {
+    public int Version {get;}
     private BinaryReader _reader;
 
     #region Constructor
-        public GameDataReader(BinaryReader reader)
+        public GameDataReader(BinaryReader reader, int version)
         {
             this._reader = reader;
+            this.Version = version;
         }
         #endregion
         
@@ -72,6 +82,16 @@ public class GameDataReader
                 value.z = _reader.ReadSingle();
                 value.w = _reader.ReadSingle();
             
+            return value;
+        }
+        public Color ReadColor()
+        {
+            Color value;
+                value.r = _reader.ReadSingle();
+                value.g = _reader.ReadSingle();
+                value.b = _reader.ReadSingle();
+                value.a = _reader.ReadSingle();
+                
             return value;
         }
 }

@@ -95,7 +95,7 @@ public class Game : PersistableObject
                     int shapeID = version > 0 ? reader.ReadInt() : 0;
                     int materialID = version > 0 ? reader.ReadInt() : 0;
                     
-                    vShape instance = ShapeFactory.Get(shapeID);
+                    vShape instance = ShapeFactory.Get(shapeID, materialID);
                         instance.Load(reader);
                         _shapes.Add(instance);
                 }
