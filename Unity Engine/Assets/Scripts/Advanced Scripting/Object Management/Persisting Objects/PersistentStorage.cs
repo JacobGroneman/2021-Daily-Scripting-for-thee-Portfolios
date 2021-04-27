@@ -15,11 +15,12 @@ public class PersistentStorage : MonoBehaviour
     }
 
     #region Save/Load
-        public void Save(PersistableObject obj)
+        public void Save(PersistableObject obj, int version)
         {
             using (var writer = new BinaryWriter
                 (System.IO.File.Open(_savePath, FileMode.Create)))
             {
+                writer.Write(-version);
                 obj.Save(new GameDataWriter(writer));
             }
         }
@@ -28,7 +29,7 @@ public class PersistentStorage : MonoBehaviour
             using (var reader = new BinaryReader
                 (System.IO.File.Open(_savePath, FileMode.Open)))
             {
-                obj.Load(new GameDataReader(reader));
+                obj.Load(new GameDataReader(reader, -reader.ReadInt32()));
             }
         }
         #endregion

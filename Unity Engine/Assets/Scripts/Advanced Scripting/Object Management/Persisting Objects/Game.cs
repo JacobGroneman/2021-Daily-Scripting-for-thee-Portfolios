@@ -37,7 +37,7 @@ public class Game : PersistableObject
         }
         else if(Input.GetKeyDown(SaveKey))
         {
-            Storage.Save(this);
+            Storage.Save(this, SaveVersion);
         }
         else if(Input.GetKeyDown(LoadKey))
         {
@@ -50,10 +50,14 @@ public class Game : PersistableObject
         {
             vShape instance = ShapeFactory.GetRandom();
             
-            Transform t = instance.transform;
-                t.localPosition = Random.insideUnitSphere * 5f;
-                t.localRotation = Random.rotation;
-                t.localScale = Vector3.one * Random.Range(0.1f, 1f);
+                Transform t = instance.transform;
+                    t.localPosition = Random.insideUnitSphere * 5f;
+                    t.localRotation = Random.rotation;
+                    t.localScale = Vector3.one * Random.Range(0.1f, 1f);
+                
+                instance.SetColor(Random.ColorHSV
+                    (hueMin:0, hueMax:1f, saturationMin: 0.5f, saturationMax: 1f,
+                    valueMin: 0.25f, valueMax: 1f, alphaMin: 1f, alphaMax:1f));
                 
                 _shapes.Add(instance);
         }
@@ -70,8 +74,6 @@ public class Game : PersistableObject
         }
         public override void Save(GameDataWriter writer)
         {
-            writer.Write(-SaveVersion);//Always SaveVersion < 0 for clarity.
-            
             writer.Write(_shapes.Count);
                 for (int i = 0; i < _shapes.Count; i++)
                 {
