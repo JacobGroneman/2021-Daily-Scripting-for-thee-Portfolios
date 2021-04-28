@@ -9,11 +9,14 @@ public class Game : PersistableObject
     public PersistentStorage Storage;
         private const int SaveVersion = 1;
 
-        public vShapeFactory ShapeFactory;
+    public vShapeFactory ShapeFactory;
         private List<vShape> _shapes;
+        public float CreationSpeed {get; set;}
+        private float _creationProgress;
 
-    public KeyCode //This is nice
+        public KeyCode //This is nice
         CreateKey = KeyCode.C,
+        DestroyKey = KeyCode.X,
         NewGameKey = KeyCode.N,
         SaveKey = KeyCode.S,
         LoadKey = KeyCode.L;
@@ -27,25 +30,39 @@ public class Game : PersistableObject
     
     void Update()
     {
-        if (Input.GetKeyDown(CreateKey))
-        {
-            CreateShape();
-        }
-        else if(Input.GetKey(NewGameKey))
-        {
-            BeginNewGame();
-        }
-        else if(Input.GetKeyDown(SaveKey))
-        {
-            Storage.Save(this, SaveVersion);
-        }
-        else if(Input.GetKeyDown(LoadKey))
-        {
-            Storage.Load(this); //YOOO
-        }
+        #region Instantiation
+            _creationProgress += Time.deltaTime * CreationSpeed;
+                while (_creationProgress >= 1f)
+                {
+                    _creationProgress -= 1f;
+                    CreateShape();
+                }
+                #endregion
+        #region Input
+            if (Input.GetKeyDown(CreateKey))
+            {
+                CreateShape();
+            }
+            else if (Input.GetKeyDown(DestroyKey))
+            {
+                DestroyShape();
+            }
+            else if(Input.GetKey(NewGameKey))
+            {
+                BeginNewGame();
+            }
+            else if(Input.GetKeyDown(SaveKey))
+            {
+                Storage.Save(this, SaveVersion);
+            }
+            else if(Input.GetKeyDown(LoadKey))
+            {
+                Storage.Load(this); //YOOO
+            }
+            #endregion
     }
 
-    #region Instantiate
+    #region Instantiate/Destroy
         private void CreateShape()
         {
             vShape instance = ShapeFactory.GetRandom();
@@ -60,6 +77,18 @@ public class Game : PersistableObject
                     valueMin: 0.25f, valueMax: 1f, alphaMin: 1f, alphaMax:1f));
                 
                 _shapes.Add(instance);
+        }
+        private void DestroyShape()
+        {
+            if (_shapes.Count > 0)
+            {
+                int index = Random.Range(0, _shapes.Count);
+                    Destroy(_shapes[index].gameObject);
+                
+                int lastIndex = _shapes.Count - 1;
+                    _shapes[index] = _shapes[lastIndex];
+                    _shapes.RemoveAt(lastIndex);
+            }
         }
         #endregion
     
