@@ -12,9 +12,12 @@ public class Game : PersistableObject
     public vShapeFactory ShapeFactory;
         private List<vShape> _shapes;
         public float CreationSpeed {get; set;}
-        private float _creationProgress;
+            private float _creationProgress;
+            
+        public float DestructionSpeed {get; set;}
+            private float _destructionProgress;
 
-        public KeyCode //This is nice
+    public KeyCode //This is nice
         CreateKey = KeyCode.C,
         DestroyKey = KeyCode.X,
         NewGameKey = KeyCode.N,
@@ -36,6 +39,12 @@ public class Game : PersistableObject
                 {
                     _creationProgress -= 1f;
                     CreateShape();
+                }
+            _destructionProgress += DestructionSpeed * Time.deltaTime;
+                while (_destructionProgress >= 1f)
+                {
+                    _destructionProgress -= 1f;
+                    DestroyShape();
                 }
                 #endregion
         #region Input
@@ -83,7 +92,7 @@ public class Game : PersistableObject
             if (_shapes.Count > 0)
             {
                 int index = Random.Range(0, _shapes.Count);
-                    Destroy(_shapes[index].gameObject);
+                    ShapeFactory.Reclaim(_shapes[index]);
                 
                 int lastIndex = _shapes.Count - 1;
                     _shapes[index] = _shapes[lastIndex];
@@ -97,7 +106,7 @@ public class Game : PersistableObject
         {
             for (int i = 0; i < _shapes.Count; i++)
             {
-                Destroy(_shapes[i].gameObject);
+                ShapeFactory.Reclaim(_shapes[i]);
             }
             _shapes.Clear();
         }
