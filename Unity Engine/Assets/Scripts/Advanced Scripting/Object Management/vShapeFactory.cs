@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [CreateAssetMenu]
 public class vShapeFactory : ScriptableObject
@@ -13,6 +14,10 @@ public class vShapeFactory : ScriptableObject
     [SerializeField]
     private bool _recycle;
         private List<vShape>[] _pools;
+    
+    #region Scene
+        private Scene _poolScene;
+        #endregion
 
     #region Retrieve
         public vShape Get(int shapeID = 0, int materialID = 0)
@@ -34,6 +39,8 @@ public class vShapeFactory : ScriptableObject
                         {
                             instance = Instantiate(_prefabs[shapeID]);
                             instance.ShapeID = shapeID;
+                                SceneManager.MoveGameObjectToScene
+                                    (instance.gameObject, _poolScene);
                         }
                 }
                 else 
@@ -62,6 +69,26 @@ public class vShapeFactory : ScriptableObject
                 {
                     _pools[i] = new List<vShape>();
                 }
+
+            if (Application.isEditor)
+            {
+                _poolScene = SceneManager.GetSceneByName(name);
+                    if (_poolScene.isLoaded)
+                    {
+                        GameObject[] rootObjects = _poolScene.GetRootGameObjects();
+                            for (int i = 0; i < rootObjects.Length; i++)
+                            {
+                                vShape pooledShape = rootObjects[i].GetComponent<vShape>();
+                                    if (!pooledShape.gameObject.activeSelf)
+                                    {
+                                        _pools[pooledShape.ShapeID].Add(pooledShape);
+                                    }
+                            }
+                        
+                        return;
+                    }
+            }
+            _poolScene = SceneManager.CreateScene(name); //Cool
         }
         public void Reclaim(vShape shapeToRecycle)
         {
