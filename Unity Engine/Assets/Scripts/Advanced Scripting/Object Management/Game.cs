@@ -2,32 +2,56 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using File = UnityEngine.Windows.File;
 
 public class Game : PersistableObject
 {
-    public PersistentStorage Storage;
-        private const int SaveVersion = 1;
+    #region Version/Storage
+        public PersistentStorage Storage;
+            private const int SaveVersion = 1;
+            #endregion
 
-    public vShapeFactory ShapeFactory;
-        private List<vShape> _shapes;
+    #region Level
+        public int LevelCount;
+        #endregion
+        
+    #region Objects
+        public vShapeFactory ShapeFactory;
+            private List<vShape> _shapes;
         public float CreationSpeed {get; set;}
             private float _creationProgress;
-            
         public float DestructionSpeed {get; set;}
             private float _destructionProgress;
+            #endregion
 
-    public KeyCode //This is nice
-        CreateKey = KeyCode.C,
-        DestroyKey = KeyCode.X,
-        NewGameKey = KeyCode.N,
-        SaveKey = KeyCode.S,
-        LoadKey = KeyCode.L;
-
-    void Awake()
+    #region Input
+        public KeyCode //This is nice
+            CreateKey = KeyCode.C,
+            DestroyKey = KeyCode.X,
+            NewGameKey = KeyCode.N, 
+            SaveKey = KeyCode.S,
+            LoadKey = KeyCode.L;
+            #endregion
+            
+    void Start()
     {
         #region Initialize
             _shapes = new List<vShape>();
+
+            if (Application.isEditor)
+            {
+                for (int i = 0; i < SceneManager.sceneCount; i++)
+                {
+                    Scene loadedScene = SceneManager.GetSceneAt(i);
+                        if (loadedScene.name.Contains("Level"))
+                        {
+                            SceneManager.SetActiveScene(loadedScene);
+                            return;
+                        }
+                }
+            }
+            StartCoroutine(LoadLevel(1));
             #endregion
     }
     
@@ -67,6 +91,17 @@ public class Game : PersistableObject
             else if(Input.GetKeyDown(LoadKey))
             {
                 Storage.Load(this); //YOOO
+            }
+            else
+            {
+                for (int i = 0; i < LevelCount; i++)
+                {
+                    if (Input.GetKeyDown(KeyCode.Alpha0 + i))
+                    {
+                        StartCoroutine(LoadLevel(i));
+                        return;
+                    }
+                }
             }
             #endregion
     }
@@ -139,6 +174,21 @@ public class Game : PersistableObject
                         instance.Load(reader);
                         _shapes.Add(instance);
                 }
+        }
+        #endregion
+    
+    #region Level
+        private IEnumerator LoadLevel(int levelBuildIndex)
+        {
+            enabled = false; //disables Game.cs monobehavior for LoadLevel() (to prevent player control!)
+
+            yield return SceneManager.LoadSceneAsync
+                (levelBuildIndex, LoadSceneMode.Additive);
+            
+            SceneManager.SetActiveScene
+                (SceneManager.GetSceneByBuildIndex(levelBuildIndex));
+
+            enabled = true;
         }
         #endregion
 }
