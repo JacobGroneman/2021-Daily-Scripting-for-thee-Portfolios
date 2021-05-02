@@ -9,11 +9,12 @@ public class Game : PersistableObject
 {
     #region Version/Storage
         public PersistentStorage Storage;
-            private const int SaveVersion = 1;
+            private const int SaveVersion = 2;
             #endregion
 
     #region Level
         public int LevelCount;
+        private int _loadedLevelBuildIndex;
         #endregion
         
     #region Objects
@@ -47,6 +48,7 @@ public class Game : PersistableObject
                         if (loadedScene.name.Contains("Level"))
                         {
                             SceneManager.SetActiveScene(loadedScene);
+                            _loadedLevelBuildIndex = loadedScene.buildIndex;
                             return;
                         }
                 }
@@ -98,6 +100,7 @@ public class Game : PersistableObject
                 {
                     if (Input.GetKeyDown(KeyCode.Alpha0 + i))
                     {
+                        BeginNewGame();
                         StartCoroutine(LoadLevel(i));
                         return;
                     }
@@ -136,7 +139,7 @@ public class Game : PersistableObject
         }
         #endregion
     
-    #region Scene
+    #region Create/Save/Load
         private void BeginNewGame()
         {
             for (int i = 0; i < _shapes.Count; i++)
@@ -148,6 +151,7 @@ public class Game : PersistableObject
         public override void Save(GameDataWriter writer)
         {
             writer.Write(_shapes.Count);
+            writer.Write(_loadedLevelBuildIndex);
                 for (int i = 0; i < _shapes.Count; i++)
                 {
                     writer.Write(_shapes[i].ShapeID);
@@ -165,6 +169,7 @@ public class Game : PersistableObject
                     return;
                 }
             int count = version <= 0 ? -version : reader.ReadInt(); //Genius (see below code)
+            StartCoroutine(LoadLevel(version < 2 ? 1 : reader.ReadInt()));
                 for (int i = 0; i < count; i++)
                 {
                     int shapeID = version > 0 ? reader.ReadInt() : 0;
@@ -182,11 +187,19 @@ public class Game : PersistableObject
         {
             enabled = false; //disables Game.cs monobehavior for LoadLevel() (to prevent player control!)
 
+            if (_loadedLevelBuildIndex > 0)
+            {
+                yield return SceneManager.UnloadSceneAsync
+                    (_loadedLevelBuildIndex);
+            }
+
             yield return SceneManager.LoadSceneAsync
                 (levelBuildIndex, LoadSceneMode.Additive);
             
             SceneManager.SetActiveScene
                 (SceneManager.GetSceneByBuildIndex(levelBuildIndex));
+
+            _loadedLevelBuildIndex = levelBuildIndex;
 
             enabled = true;
         }
