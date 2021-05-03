@@ -18,7 +18,9 @@ public class Game : PersistableObject
         #endregion
         
     #region Objects
-        public vShapeFactory ShapeFactory;
+        public SpawnZone SpawnZoneOfLevel {get; set;}
+        [SerializeField]
+        private vShapeFactory ShapeFactory;
             private List<vShape> _shapes;
         public float CreationSpeed {get; set;}
             private float _creationProgress;
@@ -34,12 +36,21 @@ public class Game : PersistableObject
             SaveKey = KeyCode.S,
             LoadKey = KeyCode.L;
             #endregion
-            
+
+    #region Singleton
+        public static Game Instance {get; private set;}
+        #endregion
+
+    void OnEnable()
+    {
+        Instance = this;
+    }
+        
     void Start()
     {
         #region Initialize
+            Instance = this;
             _shapes = new List<vShape>();
-
             if (Application.isEditor)
             {
                 for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -115,7 +126,7 @@ public class Game : PersistableObject
             vShape instance = ShapeFactory.GetRandom();
             
                 Transform t = instance.transform;
-                    t.localPosition = Random.insideUnitSphere * 5f;
+                    t.localPosition = SpawnZoneOfLevel.SpawnPoint;
                     t.localRotation = Random.rotation;
                     t.localScale = Vector3.one * Random.Range(0.1f, 1f);
                 
