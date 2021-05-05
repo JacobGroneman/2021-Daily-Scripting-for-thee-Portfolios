@@ -162,6 +162,7 @@ public class Game : PersistableObject
         public override void Save(GameDataWriter writer)
         {
             writer.Write(_shapes.Count);
+            writer.Write(Random.state);
             writer.Write(_loadedLevelBuildIndex);
                 for (int i = 0; i < _shapes.Count; i++)
                 {
@@ -173,13 +174,21 @@ public class Game : PersistableObject
         }
         public override void Load(GameDataReader reader)
         {
-            int version = -reader.ReadInt();//Flips +- again
+            #region Version Handling
+                int version = -reader.ReadInt();//Flips +- again
                 if (version > SaveVersion)
                 {
                     Debug.LogError("Unsupported (future)save version" + version);
                     return;
                 }
-            int count = version <= 0 ? -version : reader.ReadInt(); //Genius (see below code)
+                int count = version <= 0 ? -version : reader.ReadInt(); //Genius (see below code)
+    
+                if (version >= 3)
+                {
+                    Random.state = reader.ReadRandomState();
+                }
+                #endregion
+            
             StartCoroutine(LoadLevel(version < 2 ? 1 : reader.ReadInt()));
                 for (int i = 0; i < count; i++)
                 {

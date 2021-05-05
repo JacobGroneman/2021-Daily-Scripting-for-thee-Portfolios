@@ -33,13 +33,17 @@ public class GameDataWriter
             _writer.Write(value.y);
             _writer.Write(value.z);
         }
-
         public void Write(Color value)
         {
             _writer.Write(value.r);
             _writer.Write(value.g);
             _writer.Write(value.b);
             _writer.Write(value.a);
+        }
+        //Random Seed
+        public void Write(Random.State value)
+        {
+            
         }
 }
 
@@ -93,5 +97,9 @@ public class GameDataReader
                 value.a = _reader.ReadSingle();
                 
             return value;
+        }
+        public Random.State ReadRandomState()
+        {
+            return Random.state;
         }
 }
