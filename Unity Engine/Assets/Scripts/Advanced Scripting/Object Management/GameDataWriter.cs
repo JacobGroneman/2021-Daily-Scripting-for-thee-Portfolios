@@ -43,7 +43,8 @@ public class GameDataWriter
         //Random Seed
         public void Write(Random.State value)
         {
-            
+            _writer.Write(JsonUtility.ToJson(value));
+            //Debug.Log(JsonUtility.ToJson(value));
         }
 }
 
@@ -100,6 +101,7 @@ public class GameDataReader
         }
         public Random.State ReadRandomState()
         {
-            return Random.state;
+            //Returns Json and converts it to Random.State
+            return JsonUtility.FromJson<Random.State>(_reader.ReadString());
         }
 }

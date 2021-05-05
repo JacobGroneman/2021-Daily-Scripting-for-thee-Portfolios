@@ -10,7 +10,8 @@ public class Game : PersistableObject
     #region Version/Storage
         public PersistentStorage Storage;
             private const int SaveVersion = 2;
-            #endregion
+        private Random.State _mainRandomState;
+        #endregion
 
     #region Level
         public int LevelCount;
@@ -49,6 +50,7 @@ public class Game : PersistableObject
     void Start()
     {
         #region Initialize
+            _mainRandomState = Random.state;
             Instance = this;
             _shapes = new List<vShape>();
             if (Application.isEditor)
@@ -64,6 +66,9 @@ public class Game : PersistableObject
                         }
                 }
             }
+            #endregion
+        #region Execution
+            BeginNewGame();
             StartCoroutine(LoadLevel(1));
             #endregion
     }
@@ -153,6 +158,12 @@ public class Game : PersistableObject
     #region Create/Save/Load
         private void BeginNewGame()
         {
+            //Generate Seed
+                Random.state = _mainRandomState;
+                int seed = Random.Range(0, int.MaxValue) ^ (int)Time.timeScale; //Research ^ op.
+                _mainRandomState = Random.state;
+                    Random.InitState(seed);
+                
             for (int i = 0; i < _shapes.Count; i++)
             {
                 ShapeFactory.Reclaim(_shapes[i]);
