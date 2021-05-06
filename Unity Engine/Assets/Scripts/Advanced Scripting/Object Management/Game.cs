@@ -16,6 +16,7 @@ public class Game : PersistableObject
     #region Level
         public int LevelCount;
         private int _loadedLevelBuildIndex;
+        [SerializeField] private bool _reseedOnLoad;
         #endregion
         
     #region Objects
@@ -196,7 +197,11 @@ public class Game : PersistableObject
     
                 if (version >= 3)
                 {
-                    Random.state = reader.ReadRandomState();
+                    Random.State state = reader.ReadRandomState();
+                        if (!_reseedOnLoad)
+                        {
+                            Random.state = state;
+                        }
                 }
                 #endregion
             
