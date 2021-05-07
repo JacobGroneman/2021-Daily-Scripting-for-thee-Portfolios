@@ -20,7 +20,6 @@ public class Game : PersistableObject
         #endregion
         
     #region Objects
-        public SpawnZone SpawnZoneOfLevel {get; set;}
         [SerializeField]
         private vShapeFactory ShapeFactory;
             private List<vShape> _shapes;
@@ -38,21 +37,11 @@ public class Game : PersistableObject
             SaveKey = KeyCode.S,
             LoadKey = KeyCode.L;
             #endregion
-
-    #region Singleton
-        public static Game Instance {get; private set;}
-        #endregion
-
-    void OnEnable()
-    {
-        Instance = this;
-    }
-        
+            
     void Start()
     {
         #region Initialize
             _mainRandomState = Random.state;
-            Instance = this;
             _shapes = new List<vShape>();
             if (Application.isEditor)
             {
@@ -132,7 +121,7 @@ public class Game : PersistableObject
             vShape instance = ShapeFactory.GetRandom();
             
                 Transform t = instance.transform;
-                    t.localPosition = SpawnZoneOfLevel.SpawnPoint;
+                    t.localPosition = GameLevel.Current.SpawnPoint;
                     t.localRotation = Random.rotation;
                     t.localScale = Vector3.one * Random.Range(0.1f, 1f);
                 
@@ -176,6 +165,7 @@ public class Game : PersistableObject
             writer.Write(_shapes.Count);
             writer.Write(Random.state);
             writer.Write(_loadedLevelBuildIndex);
+            GameLevel.Current.Save(writer);
                 for (int i = 0; i < _shapes.Count; i++)
                 {
                     writer.Write(_shapes[i].ShapeID);
@@ -184,40 +174,48 @@ public class Game : PersistableObject
                     _shapes[i].Save(writer);
                 }
         }
+
         public override void Load(GameDataReader reader)
         {
-            #region Version Handling
-                int version = -reader.ReadInt();//Flips +- again
-                if (version > SaveVersion)
-                {
-                    Debug.LogError("Unsupported (future)save version" + version);
-                    return;
-                }
+            int version = -reader.ReadInt(); //Flips +- again
+
+            if (version > SaveVersion)
+            {
+                Debug.LogError("Unsupported (future)save version" + version);
+                return;
+            }
+
+            StartCoroutine(LoadGame(reader));
+        }
+            IEnumerator LoadGame(GameDataReader reader) 
+            {
+                int version = reader.Version;
                 int count = version <= 0 ? -version : reader.ReadInt(); //Genius (see below code)
-    
-                if (version >= 3)
-                {
-                    Random.State state = reader.ReadRandomState();
-                        if (!_reseedOnLoad)
-                        {
-                            Random.state = state;
-                        }
-                }
-                #endregion
-            
-            StartCoroutine(LoadLevel(version < 2 ? 1 : reader.ReadInt()));
-                for (int i = 0; i < count; i++)
-                {
-                    int shapeID = version > 0 ? reader.ReadInt() : 0;
+                    if (version >= 3)
+                    {
+                        Random.State state = reader.ReadRandomState(); 
+                            if (!_reseedOnLoad) 
+                            { 
+                                Random.state = state; 
+                            } 
+                    }
+                yield return LoadLevel(version < 2 ? 1 : reader.ReadInt());
+                    if (version >= 3) 
+                    { 
+                        GameLevel.Current.Load(reader); 
+                    }
+                for (int i = 0; i < count; i++) 
+                { 
+                    int shapeID = version > 0 ? reader.ReadInt() : 0; 
                     int materialID = version > 0 ? reader.ReadInt() : 0;
                     
-                    vShape instance = ShapeFactory.Get(shapeID, materialID);
-                        instance.Load(reader);
-                        _shapes.Add(instance);
-                }
-        }
-        #endregion
-    
+                    vShape instance = ShapeFactory.Get(shapeID, materialID); 
+                        instance.Load(reader); 
+                        _shapes.Add(instance); 
+                } 
+            }
+            #endregion
+            
     #region Level
         private IEnumerator LoadLevel(int levelBuildIndex)
         {
