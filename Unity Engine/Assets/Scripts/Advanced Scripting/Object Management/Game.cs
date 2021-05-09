@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using File = UnityEngine.Windows.File;
 
@@ -37,6 +38,13 @@ public class Game : PersistableObject
             SaveKey = KeyCode.S,
             LoadKey = KeyCode.L;
             #endregion
+
+    #region User Interface
+        [SerializeField]
+        private Slider _creationSpeedSlider;
+        [SerializeField] 
+        private Slider _destructionSpeedSlider;
+        #endregion
             
     void Start()
     {
@@ -65,20 +73,6 @@ public class Game : PersistableObject
     
     void Update()
     {
-        #region Instantiation
-            _creationProgress += Time.deltaTime * CreationSpeed;
-                while (_creationProgress >= 1f)
-                {
-                    _creationProgress -= 1f;
-                    CreateShape();
-                }
-            _destructionProgress += DestructionSpeed * Time.deltaTime;
-                while (_destructionProgress >= 1f)
-                {
-                    _destructionProgress -= 1f;
-                    DestroyShape();
-                }
-                #endregion
         #region Input
             if (Input.GetKeyDown(CreateKey))
             {
@@ -91,6 +85,7 @@ public class Game : PersistableObject
             else if(Input.GetKey(NewGameKey))
             {
                 BeginNewGame();
+                StartCoroutine(LoadLevel(_loadedLevelBuildIndex));
             }
             else if(Input.GetKeyDown(SaveKey))
             {
@@ -113,6 +108,24 @@ public class Game : PersistableObject
                 }
             }
             #endregion
+    }
+
+    void FixedUpdate()
+    {
+        #region Instantiation
+            _creationProgress += Time.deltaTime * CreationSpeed;
+                while (_creationProgress >= 1f)
+                {
+                    _creationProgress -= 1f;
+                    CreateShape();
+                }
+            _destructionProgress += DestructionSpeed * Time.deltaTime;
+                while (_destructionProgress >= 1f)
+                {
+                    _destructionProgress -= 1f;
+                    DestroyShape();
+                }
+                #endregion
     }
 
     #region Instantiate/Destroy
@@ -153,7 +166,10 @@ public class Game : PersistableObject
                 int seed = Random.Range(0, int.MaxValue) ^ (int)Time.timeScale; //Research ^ op.
                 _mainRandomState = Random.state;
                     Random.InitState(seed);
-                
+                    
+            _creationSpeedSlider.value = CreationSpeed = 0;
+            _destructionSpeedSlider.value = DestructionSpeed = 0;
+            
             for (int i = 0; i < _shapes.Count; i++)
             {
                 ShapeFactory.Reclaim(_shapes[i]);
@@ -164,6 +180,10 @@ public class Game : PersistableObject
         {
             writer.Write(_shapes.Count);
             writer.Write(Random.state);
+            writer.Write(CreationSpeed);
+                writer.Write(_creationProgress);
+            writer.Write(DestructionSpeed);
+                writer.Write(_destructionProgress);
             writer.Write(_loadedLevelBuildIndex);
             GameLevel.Current.Save(writer);
                 for (int i = 0; i < _shapes.Count; i++)
@@ -197,7 +217,11 @@ public class Game : PersistableObject
                             if (!_reseedOnLoad) 
                             { 
                                 Random.state = state; 
-                            } 
+                            }
+                        _creationSpeedSlider.value = CreationSpeed = reader.ReadFloat();
+                            _creationProgress = reader.ReadFloat();
+                        _destructionSpeedSlider.value = DestructionSpeed = reader.ReadFloat();
+                            _destructionProgress = reader.ReadFloat();
                     }
                 yield return LoadLevel(version < 2 ? 1 : reader.ReadInt());
                     if (version >= 3) 
