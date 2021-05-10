@@ -10,7 +10,7 @@ public class Game : PersistableObject
 {
     #region Version/Storage
         public PersistentStorage Storage;
-            private const int SaveVersion = 2;
+            private const int SaveVersion = 4; //(Angular Velocities)
         private Random.State _mainRandomState;
         #endregion
 
@@ -112,6 +112,13 @@ public class Game : PersistableObject
 
     void FixedUpdate()
     {
+        #region Optimization
+            for (int i = 0; i < _shapes.Count; i++)
+            {
+                _shapes[i].GameUpdate();
+            }
+            #endregion
+
         #region Instantiation
             _creationProgress += Time.deltaTime * CreationSpeed;
                 while (_creationProgress >= 1f)
@@ -141,8 +148,13 @@ public class Game : PersistableObject
                 instance.SetColor(Random.ColorHSV
                     (hueMin:0, hueMax:1f, saturationMin: 0.5f, saturationMax: 1f,
                     valueMin: 0.25f, valueMax: 1f, alphaMin: 1f, alphaMax:1f));
+
+                instance.AngularVelocity = 
+                    Random.onUnitSphere * Random.Range(0f, 50f); //ran range/1 sec
+                instance.Velocity =
+                    Random.onUnitSphere * Random.Range(0f, 2f);
                 
-                _shapes.Add(instance);
+            _shapes.Add(instance);
         }
         private void DestroyShape()
         {

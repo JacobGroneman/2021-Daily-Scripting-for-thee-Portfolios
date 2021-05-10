@@ -3,7 +3,7 @@
 public class RotatingObject : PersistableObject
 {
     [SerializeField] 
-    private Vector3 _angularVelocity;
+    private Vector3 _angularVelocity; // deg./1 sec
     
     void FixedUpdate()
     {
