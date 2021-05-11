@@ -139,22 +139,8 @@ public class Game : PersistableObject
         private void CreateShape()
         {
             vShape instance = ShapeFactory.GetRandom();
-            
-                Transform t = instance.transform;
-                    t.localPosition = GameLevel.Current.SpawnPoint;
-                    t.localRotation = Random.rotation;
-                    t.localScale = Vector3.one * Random.Range(0.1f, 1f);
-                
-                instance.SetColor(Random.ColorHSV
-                    (hueMin:0, hueMax:1f, saturationMin: 0.5f, saturationMax: 1f,
-                    valueMin: 0.25f, valueMax: 1f, alphaMin: 1f, alphaMax:1f));
-
-                instance.AngularVelocity = 
-                    Random.onUnitSphere * Random.Range(0f, 50f); //ran range/1 sec
-                instance.Velocity =
-                    Random.onUnitSphere * Random.Range(0f, 2f);
-                
-            _shapes.Add(instance);
+                GameLevel.Current.ConfigureSpawn(instance);
+                _shapes.Add(instance);
         }
         private void DestroyShape()
         {

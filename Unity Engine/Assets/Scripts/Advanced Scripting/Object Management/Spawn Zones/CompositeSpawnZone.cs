@@ -30,6 +30,7 @@ public class CompositeSpawnZone : SpawnZone
             return _spawnZones[index].SpawnPoint;
         }
     }
+    
     #region Save/Load
         public override void Save(GameDataWriter writer)
         {
