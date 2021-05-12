@@ -30,7 +30,28 @@ public class CompositeSpawnZone : SpawnZone
             return _spawnZones[index].SpawnPoint;
         }
     }
-    
+
+    #region Configure
+        public override void ConfigureSpawn(vShape shape)
+        {
+            int index;
+                if (_isSequential)
+                {
+                    index = _nextSequentialIndex++;
+                        if (_nextSequentialIndex >= _spawnZones.Length)
+                        {
+                            _nextSequentialIndex = 0;
+                        }
+                }
+                else
+                {
+                    index = Random.Range(0, _spawnZones.Length);
+                }
+                
+                _spawnZones[index].ConfigureSpawn(shape);
+        }
+        #endregion
+
     #region Save/Load
         public override void Save(GameDataWriter writer)
         {

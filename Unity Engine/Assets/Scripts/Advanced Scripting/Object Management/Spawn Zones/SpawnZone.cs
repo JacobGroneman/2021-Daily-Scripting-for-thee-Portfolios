@@ -6,8 +6,16 @@ public abstract class SpawnZone : PersistableObject
 { 
     public abstract Vector3 SpawnPoint {get;}
 
+    public enum SpawnMovementDirection
+    {Forward, Upward, Outward, Random}
+        [SerializeField]
+        private SpawnMovementDirection _spawnMovementDirection;
+
+        [SerializeField] 
+        private float _spawnSpeedMin, _spawnSpeedMax;
+
     #region Configuration
-       public void ConfigureSpawn(vShape shape)
+       public virtual void ConfigureSpawn(vShape shape)
         {
             Transform t = shape.transform;
             t.localPosition = SpawnPoint;
@@ -20,8 +28,19 @@ public abstract class SpawnZone : PersistableObject
 
             shape.AngularVelocity = 
                 Random.onUnitSphere * Random.Range(0f, 50f); //ran range/1 sec
-            shape.Velocity =
-                transform.forward * Random.Range(0f, 2f);
+            
+            Vector3 direction;
+                if (_spawnMovementDirection == SpawnMovementDirection.Upward)
+                {direction = transform.up;}
+                else if (_spawnMovementDirection == SpawnMovementDirection.Outward)
+                {direction = (t.localPosition - transform.position).normalized;}
+                else if (_spawnMovementDirection == SpawnMovementDirection.Random)
+                {direction = Random.onUnitSphere;}
+                else
+                {direction = transform.forward;}
+            
+                shape.Velocity =
+                    direction * Random.Range(_spawnSpeedMin, _spawnSpeedMax);
         }
        #endregion
 }
