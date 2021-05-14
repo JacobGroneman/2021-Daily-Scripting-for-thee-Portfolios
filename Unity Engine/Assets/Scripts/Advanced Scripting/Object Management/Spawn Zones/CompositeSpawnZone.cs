@@ -6,6 +6,8 @@ public class CompositeSpawnZone : SpawnZone
 {
     [SerializeField] 
     private SpawnZone[] _spawnZones;
+    [SerializeField]
+    private bool _overrideConfig;
     [SerializeField] 
     private bool _isSequential;
         private int _nextSequentialIndex;
@@ -34,21 +36,28 @@ public class CompositeSpawnZone : SpawnZone
     #region Configure
         public override void ConfigureSpawn(vShape shape)
         {
-            int index;
-                if (_isSequential)
-                {
-                    index = _nextSequentialIndex++;
+            if (_overrideConfig)
+            {
+                base.ConfigureSpawn(shape);
+            }
+            else
+            {
+                int index;
+                    if (_isSequential)
+                    {
+                        index = _nextSequentialIndex++;
                         if (_nextSequentialIndex >= _spawnZones.Length)
                         {
                             _nextSequentialIndex = 0;
                         }
-                }
-                else
-                {
-                    index = Random.Range(0, _spawnZones.Length);
-                }
-                
+                    }
+                    else
+                    {
+                        index = Random.Range(0, _spawnZones.Length);
+                    }
+
                 _spawnZones[index].ConfigureSpawn(shape);
+            }
         }
         #endregion
 

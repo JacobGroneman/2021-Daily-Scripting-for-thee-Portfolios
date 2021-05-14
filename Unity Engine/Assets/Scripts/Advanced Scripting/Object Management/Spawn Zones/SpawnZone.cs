@@ -12,26 +12,29 @@ public abstract class SpawnZone : PersistableObject
         public enum MovementDirection
         {Forward, Upward, Outward, Random}
             public MovementDirection movementDirection;
-        
+
+        public FloatRange AngularSpeed;
         public FloatRange Speed;
+
+        public FloatRange Scale;
     }
         [SerializeField] 
         private SpawnConfiguration _spawnConfig;
-    
+
     #region Configuration
         public virtual void ConfigureSpawn(vShape shape)
         {
             Transform t = shape.transform;
                 t.localPosition = SpawnPoint;
                 t.localRotation = Random.rotation;
-                t.localScale = Vector3.one * Random.Range(0.1f, 1f);
+                t.localScale = Vector3.one * _spawnConfig.Scale.RandomValueInRange;
     
             shape.SetColor(Random.ColorHSV
                 (hueMin: 0, hueMax: 1f, saturationMin: 0.5f, saturationMax: 1f,
                     valueMin: 0.25f, valueMax: 1f, alphaMin: 1f, alphaMax: 1f));
-    
+
             shape.AngularVelocity =
-                Random.onUnitSphere * Random.Range(0f, 50f); //ran range/1 sec
+                Random.onUnitSphere * _spawnConfig.AngularSpeed.RandomValueInRange;
     
             Vector3 direction;
                 switch (_spawnConfig.movementDirection)
