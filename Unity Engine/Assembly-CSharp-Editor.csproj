@@ -51,6 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Advanced Scripting\Object Management\Script Utilities\Editor\FloatRangeDrawer.cs" />
+     <Compile Include="Assets\Scripts\Advanced Scripting\Object Management\Script Utilities\Editor\FloatRangeSliderDrawer.cs" />
  <Reference Include="UnityEditor.TestRunner">
  <HintPath>C:/Users/jacob/OneDrive/Utah Valley University/_Spring 2021/2021 Daily Scripting for thee Portfolios/Unity Engine/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
  </Reference>
