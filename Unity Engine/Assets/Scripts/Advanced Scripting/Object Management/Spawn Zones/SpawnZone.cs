@@ -19,6 +19,7 @@ public abstract class SpawnZone : PersistableObject
         public FloatRange Scale;
 
         public ColorRangeHSV Color;
+            public bool IsUniformColor;
     }
         [SerializeField] 
         private SpawnConfiguration _spawnConfig;
@@ -31,7 +32,18 @@ public abstract class SpawnZone : PersistableObject
                 t.localRotation = Random.rotation;
                 t.localScale = Vector3.one * _spawnConfig.Scale.RandomValueInRange;
 
-            shape.SetColor(_spawnConfig.Color.RandomInRange);
+            //Color
+            if (_spawnConfig.IsUniformColor)
+            {
+                shape.SetColor(_spawnConfig.Color.RandomInRange);
+            }
+            else
+            {
+                for (int i = 0; i < shape.ColorCount; i++)
+                {
+                    shape.SetColor(_spawnConfig.Color.RandomInRange, i);
+                }
+            }
 
             shape.AngularVelocity =
                 Random.onUnitSphere * _spawnConfig.AngularSpeed.RandomValueInRange;

@@ -10,7 +10,7 @@ public class Game : PersistableObject
 {
     #region Version/Storage
         public PersistentStorage Storage;
-            private const int SaveVersion = 4; //(Angular Velocities)
+            private const int SaveVersion = 5; //(Multi-Shapes, Colors)
         private Random.State _mainRandomState;
         #endregion
 
