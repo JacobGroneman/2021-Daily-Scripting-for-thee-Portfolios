@@ -38,6 +38,7 @@ public class vShapeFactory : ScriptableObject
                         else
                         {
                             instance = Instantiate(_prefabs[shapeID]);
+                            instance.OriginFactory = this;
                             instance.ShapeID = shapeID;
                                 SceneManager.MoveGameObjectToScene
                                     (instance.gameObject, _poolScene);
@@ -92,6 +93,9 @@ public class vShapeFactory : ScriptableObject
         }
         public void Reclaim(vShape shapeToRecycle)
         {
+            if (shapeToRecycle.OriginFactory != this)
+            {Debug.LogError("Tried to reclaim shape with wrong factory."); return;}
+            
             if (_recycle){
                 if (_pools == null){CreatePools();}}
             else {Destroy(shapeToRecycle.gameObject);}

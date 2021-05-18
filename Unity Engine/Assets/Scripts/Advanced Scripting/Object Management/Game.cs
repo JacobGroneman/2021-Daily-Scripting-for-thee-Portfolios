@@ -138,16 +138,14 @@ public class Game : PersistableObject
     #region Instantiate/Destroy
         private void CreateShape()
         {
-            vShape instance = ShapeFactory.GetRandom();
-                GameLevel.Current.ConfigureSpawn(instance);
-                _shapes.Add(instance);
+            _shapes.Add(GameLevel.Current.SpawnShape());
         }
         private void DestroyShape()
         {
             if (_shapes.Count > 0)
             {
                 int index = Random.Range(0, _shapes.Count);
-                    ShapeFactory.Reclaim(_shapes[index]);
+                    _shapes[index].Recycle();
                 
                 int lastIndex = _shapes.Count - 1;
                     _shapes[index] = _shapes[lastIndex];
@@ -170,7 +168,7 @@ public class Game : PersistableObject
             
             for (int i = 0; i < _shapes.Count; i++)
             {
-                ShapeFactory.Reclaim(_shapes[i]);
+                _shapes[i].Recycle();
             }
             _shapes.Clear();
         }

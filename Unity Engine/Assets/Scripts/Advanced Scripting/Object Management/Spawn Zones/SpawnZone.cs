@@ -9,10 +9,11 @@ public abstract class SpawnZone : PersistableObject
     [System.Serializable]
     public struct SpawnConfiguration
     {
+        public vShapeFactory[] Factories;
         public enum MovementDirection
         {Forward, Upward, Outward, Random}
             public MovementDirection movementDirection;
-
+            
         public FloatRange AngularSpeed;
         public FloatRange Speed;
 
@@ -25,8 +26,11 @@ public abstract class SpawnZone : PersistableObject
         private SpawnConfiguration _spawnConfig;
 
     #region Configuration
-        public virtual void ConfigureSpawn(vShape shape)
+        public virtual vShape SpawnShape()
         {
+            int factoryIndex = Random.Range(0, _spawnConfig.Factories.Length);
+            vShape shape = _spawnConfig.Factories[factoryIndex].GetRandom();
+            
             Transform t = shape.transform;
                 t.localPosition = SpawnPoint;
                 t.localRotation = Random.rotation;
@@ -66,6 +70,8 @@ public abstract class SpawnZone : PersistableObject
                 }
 
                 shape.Velocity = direction * _spawnConfig.Speed.RandomValueInRange;
+
+            return shape;
         }
         #endregion
 }

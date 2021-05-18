@@ -2,31 +2,52 @@
 
 public class vShape : PersistableObject
 {
-    [SerializeField] 
-    private MeshRenderer[] _meshRenderers;
-        private Color[] _colors;
-            public int ColorCount {get {return _colors.Length;}}
-        private static int _colorPropertyID = Shader.PropertyToID("_Color"); //Research time
-        private static MaterialPropertyBlock _sharedPropertyBlock;
-        public int ShapeID
-    {
-        get {return _shapeID;}
-        
-        set
+    #region Origin
+        public vShapeFactory OriginFactory
         {
-            if (_shapeID == int.MinValue 
-                && value != int.MinValue)
+            get {return OriginFactory;}
+            set //Pseudo-Singleton 
             {
-                _shapeID = value;   
-            }
-            else
-            {
-                Debug.LogError("Not Allowed to Change ShapeID");
+                if (OriginFactory == null)
+                {
+                    OriginFactory = value;
+                }
+                else
+                {
+                    Debug.LogError("Not allowed to change origin factory.");
+                }
             }
         }
-    }
-        private int _shapeID = int.MinValue;
-        public int MaterialID { get; private set; }
+            private vShapeFactory originFactory;
+            #endregion
+
+        #region Mesh Renderer
+            [SerializeField] 
+            private MeshRenderer[] _meshRenderers;
+                private Color[] _colors;
+                public int ColorCount {get {return _colors.Length;}}
+                private static int _colorPropertyID = Shader.PropertyToID("_Color"); //Research time
+                private static MaterialPropertyBlock _sharedPropertyBlock;
+            public int ShapeID
+            {
+                get {return _shapeID;}
+                
+                set
+                {
+                    if (_shapeID == int.MinValue 
+                        && value != int.MinValue)
+                    {
+                        _shapeID = value;   
+                    }
+                    else
+                    {
+                        Debug.LogError("Not Allowed to Change ShapeID");
+                    }
+                }
+            }
+                private int _shapeID = int.MinValue;
+            public int MaterialID { get; private set; }
+            #endregion
 
     void Awake()
     {
@@ -43,6 +64,13 @@ public class vShape : PersistableObject
         transform.Rotate(AngularVelocity * Time.deltaTime);
         transform.localPosition += Velocity * Time.deltaTime;
     }
+
+    #region Pooling
+        public void Recycle()
+        {
+            OriginFactory.Reclaim(this);
+        }
+        #endregion
 
     #region Materials
         public void SetMaterial(Material material, int materialID)

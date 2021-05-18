@@ -34,11 +34,11 @@ public class CompositeSpawnZone : SpawnZone
     }
 
     #region Configure
-        public override void ConfigureSpawn(vShape shape)
+        public override vShape SpawnShape()
         {
             if (_overrideConfig)
-            {
-                base.ConfigureSpawn(shape);
+            { 
+                return base.SpawnShape();
             }
             else
             {
@@ -56,7 +56,7 @@ public class CompositeSpawnZone : SpawnZone
                         index = Random.Range(0, _spawnZones.Length);
                     }
 
-                _spawnZones[index].ConfigureSpawn(shape);
+                return _spawnZones[index].SpawnShape();
             }
         }
         #endregion

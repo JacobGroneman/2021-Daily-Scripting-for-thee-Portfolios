@@ -24,9 +24,9 @@ public class GameLevel : PersistableObject
     }
 
     #region Configure
-        public void ConfigureSpawn(vShape shape)
+        public vShape SpawnShape()
         {
-            _spawnZone.ConfigureSpawn(shape);
+            return _spawnZone.SpawnShape();
         }
         #endregion
 
