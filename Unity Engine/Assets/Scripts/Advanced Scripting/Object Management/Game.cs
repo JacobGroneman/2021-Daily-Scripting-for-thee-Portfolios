@@ -22,7 +22,7 @@ public class Game : PersistableObject
         
     #region Objects
         [SerializeField]
-        private vShapeFactory ShapeFactory;
+        private vShapeFactory[] _shapeFactories;
             private List<vShape> _shapes;
         public float CreationSpeed {get; set;}
             private float _creationProgress;
@@ -68,6 +68,19 @@ public class Game : PersistableObject
         #region Execution
             BeginNewGame();
             StartCoroutine(LoadLevel(1));
+            #endregion
+    }
+
+    void OnEnable()
+    {
+        #region Factory Index Assignment
+            if (_shapeFactories[0].FactoryID != 0) //Load Assignment Checker
+            {
+                for (int i = 0; i < _shapeFactories.Length; i++)
+                {
+                    _shapeFactories[i].FactoryID = i; //Nice
+                }    
+            }
             #endregion
     }
     
@@ -182,8 +195,9 @@ public class Game : PersistableObject
                 writer.Write(_destructionProgress);
             writer.Write(_loadedLevelBuildIndex);
             GameLevel.Current.Save(writer);
-                for (int i = 0; i < _shapes.Count; i++)
+                for (int i = 0; i < _shapes.Count; i++) //Shape Properties
                 {
+                    writer.Write(_shapes[i].OriginFactory.FactoryID);
                     writer.Write(_shapes[i].ShapeID);
                     writer.Write(_shapes[i].MaterialID);
                     
@@ -224,12 +238,13 @@ public class Game : PersistableObject
                     { 
                         GameLevel.Current.Load(reader); 
                     }
-                for (int i = 0; i < count; i++) 
-                { 
+                for (int i = 0; i < count; i++)
+                {
+                    int factoryID = version >= 5 ? reader.ReadInt() : 0;
                     int shapeID = version > 0 ? reader.ReadInt() : 0; 
                     int materialID = version > 0 ? reader.ReadInt() : 0;
                     
-                    vShape instance = ShapeFactory.Get(shapeID, materialID); 
+                    vShape instance = _shapeFactories[factoryID].Get(shapeID, materialID);
                         instance.Load(reader); 
                         _shapes.Add(instance); 
                 } 

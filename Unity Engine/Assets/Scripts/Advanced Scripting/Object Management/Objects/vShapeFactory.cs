@@ -5,16 +5,40 @@ using UnityEngine.SceneManagement;
 [CreateAssetMenu]
 public class vShapeFactory : ScriptableObject
 {
-    [SerializeField] 
-    private vShape[] _prefabs;
+    #region Indentification
+        public int FactoryID
+        {
+            get {return factoryID;}
+            set
+            {
+                if (factoryID == int.MinValue && value != int.MinValue)
+                {
+                    factoryID = value;
+                }
+                else
+                {
+                    Debug.LogError("Not allowed to change factory ID");
+                }
+            }
+        }
+            [System.NonSerialized] //Persists beyond single play sessions in the Unity Editor!
+            private int factoryID = int.MinValue;
+            #endregion
 
-    [SerializeField] 
-    private Material[] _materials;
-
-    [SerializeField]
-    private bool _recycle;
-        private List<vShape>[] _pools;
+    #region Shapes
+        [SerializeField] 
+        private vShape[] _prefabs;
     
+        [SerializeField] 
+        private Material[] _materials;
+        #endregion
+
+    #region Pooling
+        [SerializeField]
+        private bool _recycle;
+        private List<vShape>[] _pools;    
+        #endregion
+
     #region Scene
         private Scene _poolScene;
         #endregion
