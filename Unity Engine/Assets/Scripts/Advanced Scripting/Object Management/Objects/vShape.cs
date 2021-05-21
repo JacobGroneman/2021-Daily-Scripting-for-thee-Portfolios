@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class vShape : PersistableObject
 {
@@ -49,6 +50,10 @@ public class vShape : PersistableObject
             public int MaterialID { get; private set; }
             #endregion
 
+    #region Behavior
+        private List<ShapeBehavior> _behaviorList = new List<ShapeBehavior>();
+        #endregion
+
     void Awake()
     {
         _colors = new Color[_meshRenderers.Length];
@@ -61,13 +66,21 @@ public class vShape : PersistableObject
 
     public void GameUpdate() //Fixed Update, but reduced overhead 😘
     {
-        transform.Rotate(AngularVelocity * Time.deltaTime);
-        transform.localPosition += Velocity * Time.deltaTime;
+        for (int i = 0; i < _behaviorList.Count; i++)
+        {
+            _behaviorList[i].GameUpdate(this);
+        }
     }
 
     #region Pooling
         public void Recycle()
         {
+            for (int i = 0; i < _behaviorList.Count; i++)
+            {
+                Destroy(_behaviorList[i]);
+            }
+            _behaviorList.Clear();
+            
             OriginFactory.Reclaim(this);
         }
         #endregion
@@ -110,6 +123,16 @@ public class vShape : PersistableObject
                 _meshRenderers[index].SetPropertyBlock(_sharedPropertyBlock);
             }
             #endregion
+
+    #region Behavior
+        public T AddBehavior<T>() where T : ShapeBehavior //Genius
+        {
+            T behavior = gameObject.AddComponent<T>();
+                _behaviorList.Add(behavior);
+                
+            return behavior;
+        }
+        #endregion
     
     #region Save/Load
         public override void Save(GameDataWriter writer)

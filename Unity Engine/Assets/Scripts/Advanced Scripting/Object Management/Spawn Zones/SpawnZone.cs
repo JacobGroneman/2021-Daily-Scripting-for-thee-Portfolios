@@ -49,27 +49,37 @@ public abstract class SpawnZone : PersistableObject
                 }
             }
 
-            shape.AngularVelocity =
-                Random.onUnitSphere * _spawnConfig.AngularSpeed.RandomValueInRange;
-    
-            Vector3 direction;
-                switch (_spawnConfig.movementDirection)
+            float angularSpeed = _spawnConfig.AngularSpeed.RandomValueInRange;
+                if (angularSpeed != 0f) //If moving
                 {
-                    case SpawnConfiguration.MovementDirection.Upward:
-                        direction = transform.up;
-                        break;
-                    case SpawnConfiguration.MovementDirection.Outward:
-                        direction = (t.localPosition - transform.position).normalized;
-                        break;
-                    case SpawnConfiguration.MovementDirection.Random:
-                        direction = Random.onUnitSphere;
-                        break;
-                    default:
-                        direction = transform.forward;
-                        break;
+                    var rotation = shape.AddBehavior<RotationShapeBehavior>();
+                        rotation.AngularVelocity =
+                            Random.onUnitSphere * _spawnConfig.AngularSpeed.RandomValueInRange;   
                 }
 
-                shape.Velocity = direction * _spawnConfig.Speed.RandomValueInRange;
+            float speed = _spawnConfig.Speed.RandomValueInRange;
+                if (speed != 0f)
+                {
+                    Vector3 direction;
+                    switch (_spawnConfig.movementDirection)
+                    {
+                        case SpawnConfiguration.MovementDirection.Upward:
+                            direction = transform.up;
+                            break;
+                        case SpawnConfiguration.MovementDirection.Outward:
+                            direction = (t.localPosition - transform.position).normalized;
+                            break;
+                        case SpawnConfiguration.MovementDirection.Random:
+                            direction = Random.onUnitSphere;
+                            break;
+                        default:
+                            direction = transform.forward;
+                            break;
+                    }
+    
+                    var movement = shape.AddBehavior<MovementShapeBehavior>();
+                        movement.Velocity = direction * speed;
+                }
 
             return shape;
         }
